@@ -29,7 +29,7 @@ public:
 	SceneObject();
 };
 
-//camera object test
+//camera object
 class Camera : public SceneObject {
 public:
 	glm::vec3 position;
