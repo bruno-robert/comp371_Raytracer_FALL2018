@@ -94,7 +94,9 @@ Mesh::Mesh(const char * path, const glm::vec3 &ambientColor,
 	this->shininess = shininess;
 }
 
-Light::Light(const glm::vec3 &posisiton, const glm::vec3 &color) {
+Light::Light(const glm::vec3 &posisiton, const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular) {
 	this->position = position;
-	this->color = color;
+	this->ambient = ambient;
+    this->diffuse = diffuse;
+    this->specular = specular;
 }
