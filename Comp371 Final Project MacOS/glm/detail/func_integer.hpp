@@ -55,7 +55,7 @@ namespace glm
 	/// modulo pow(2, 32). The value carry is set to 0 if the sum was
 	/// less than pow(2, 32), or to 1 otherwise.
 	///
-	/// @tparam genUType Unsigned integer scalar or vector types.
+    /// @tparam vecType Unsigned integer scalar or vector types.
 	/// 
 	/// @see <a href="http://www.opengl.org/sdk/docs/manglsl/xhtml/uaddCarry.xml">GLSL uaddCarry man page</a>
 	/// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.8 Integer Functions</a>
@@ -69,7 +69,7 @@ namespace glm
 	/// the difference if non-negative, or pow(2, 32) plus the difference
 	/// otherwise. The value borrow is set to 0 if x >= y, or to 1 otherwise.
 	///
-	/// @tparam genUType Unsigned integer scalar or vector types.
+    /// @tparam vecType Unsigned integer scalar or vector types.
 	/// 
 	/// @see <a href="http://www.opengl.org/sdk/docs/manglsl/xhtml/usubBorrow.xml">GLSL usubBorrow man page</a>
 	/// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.8 Integer Functions</a>
@@ -83,7 +83,7 @@ namespace glm
 	/// result. The 32 least-significant bits are returned in lsb.
 	/// The 32 most-significant bits are returned in msb.
 	///
-	/// @tparam genUType Unsigned integer scalar or vector types.
+    /// @tparam vecType Unsigned integer scalar or vector types.
 	/// 
 	/// @see <a href="http://www.opengl.org/sdk/docs/manglsl/xhtml/umulExtended.xml">GLSL umulExtended man page</a>
 	/// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.8 Integer Functions</a>
@@ -98,7 +98,7 @@ namespace glm
 	/// result. The 32 least-significant bits are returned in lsb.
 	/// The 32 most-significant bits are returned in msb.
 	/// 
-	/// @tparam genIType Signed integer scalar or vector types.
+    /// @tparam vecType Signed integer scalar or vector types.
 	///
 	/// @see <a href="http://www.opengl.org/sdk/docs/manglsl/xhtml/imulExtended.xml">GLSL imulExtended man page</a>
 	/// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.8 Integer Functions</a>
@@ -164,7 +164,7 @@ namespace glm
 
 	/// Returns the number of bits set to 1 in the binary representation of value.
 	///
-	/// @tparam T Signed or unsigned integer scalar or vector types.
+    /// @tparam genType Signed or unsigned integer scalar or vector types.
 	///
 	/// @see <a href="http://www.opengl.org/sdk/docs/manglsl/xhtml/bitCount.xml">GLSL bitCount man page</a>
 	/// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.8 Integer Functions</a>
@@ -184,7 +184,7 @@ namespace glm
 	/// 1 in the binary representation of value. 
 	/// If value is zero, -1 will be returned.
 	///
-	/// @tparam T Signed or unsigned integer scalar types.
+    /// @tparam genIUType Signed or unsigned integer scalar types.
 	///
 	/// @see <a href="http://www.opengl.org/sdk/docs/manglsl/xhtml/findLSB.xml">GLSL findLSB man page</a>
 	/// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.8 Integer Functions</a>
@@ -207,7 +207,7 @@ namespace glm
 	/// For negative integers, the result will be the bit number of the most significant
 	/// bit set to 0. For a value of zero or negative one, -1 will be returned.
 	///
-	/// @tparam T Signed or unsigned integer scalar types.
+    /// @tparam genIUType Signed or unsigned integer scalar types.
 	///
 	/// @see <a href="http://www.opengl.org/sdk/docs/manglsl/xhtml/findMSB.xml">GLSL findMSB man page</a>
 	/// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.8 Integer Functions</a>

@@ -156,7 +156,7 @@ namespace detail
 	
 	/// Return the determinant of a squared matrix.
 	/// 
-	/// @tparam valType Floating-point scalar types.
+    /// @tparam matType Floating-point scalar types.
 	///
 	/// @see <a href="http://www.opengl.org/sdk/docs/manglsl/xhtml/determinant.xml">GLSL determinant man page</a>
 	/// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.6 Matrix Functions</a>	
@@ -165,7 +165,7 @@ namespace detail
 
 	/// Return the inverse of a squared matrix.
 	/// 
-	/// @tparam valType Floating-point scalar types.
+    /// @tparam matType Floating-point scalar types.
 	///
 	/// @see <a href="http://www.opengl.org/sdk/docs/manglsl/xhtml/inverse.xml">GLSL inverse man page</a>
 	/// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.6 Matrix Functions</a>	 

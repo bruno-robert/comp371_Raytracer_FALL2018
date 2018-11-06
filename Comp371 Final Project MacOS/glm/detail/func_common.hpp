@@ -63,7 +63,7 @@ namespace glm
 
 	/// Returns 1.0 if x > 0, 0.0 if x == 0, or -1.0 if x < 0. 
 	/// 
-	/// @tparam genType Floating-point or signed integer; scalar or vector types.
+    /// @tparam vecType Floating-point or signed integer; scalar or vector types.
 	/// 
 	/// @see <a href="http://www.opengl.org/sdk/docs/manglsl/xhtml/sign.xml">GLSL sign man page</a>
 	/// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.3 Common Functions</a>
@@ -72,7 +72,7 @@ namespace glm
 
 	/// Returns a value equal to the nearest integer that is less then or equal to x. 
 	/// 
-	/// @tparam genType Floating-point scalar or vector types.
+    /// @tparam vecType Floating-point scalar or vector types.
 	/// 
 	/// @see <a href="http://www.opengl.org/sdk/docs/manglsl/xhtml/floor.xml">GLSL floor man page</a>
 	/// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.3 Common Functions</a>
@@ -82,7 +82,7 @@ namespace glm
 	/// Returns a value equal to the nearest integer to x
 	/// whose absolute value is not larger than the absolute value of x.
 	/// 
-	/// @tparam genType Floating-point scalar or vector types.
+    /// @tparam vecType Floating-point scalar or vector types.
 	/// 
 	/// @see <a href="http://www.opengl.org/sdk/docs/manglsl/xhtml/trunc.xml">GLSL trunc man page</a>
 	/// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.3 Common Functions</a>
@@ -95,7 +95,7 @@ namespace glm
 	/// This includes the possibility that round(x) returns the
 	/// same value as roundEven(x) for all values of x.
 	/// 
-	/// @tparam genType Floating-point scalar or vector types.
+    /// @tparam vecType Floating-point scalar or vector types.
 	/// 
 	/// @see <a href="http://www.opengl.org/sdk/docs/manglsl/xhtml/round.xml">GLSL round man page</a>
 	/// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.3 Common Functions</a>
@@ -106,7 +106,7 @@ namespace glm
 	/// A fractional part of 0.5 will round toward the nearest even
 	/// integer. (Both 3.5 and 4.5 for x will return 4.0.)
 	///
-	/// @tparam genType Floating-point scalar or vector types.
+    /// @tparam vecType Floating-point scalar or vector types.
 	/// 
 	/// @see <a href="http://www.opengl.org/sdk/docs/manglsl/xhtml/roundEven.xml">GLSL roundEven man page</a>
 	/// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.3 Common Functions</a>
@@ -117,7 +117,7 @@ namespace glm
 	/// Returns a value equal to the nearest integer
 	/// that is greater than or equal to x.
 	/// 
-	/// @tparam genType Floating-point scalar or vector types.
+    /// @tparam vecType Floating-point scalar or vector types.
 	///
 	/// @see <a href="http://www.opengl.org/sdk/docs/manglsl/xhtml/ceil.xml">GLSL ceil man page</a>
 	/// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.3 Common Functions</a>
@@ -234,8 +234,7 @@ namespace glm
 	/// @param[in]  y Value to interpolate.
 	/// @param[in]  a Interpolant.
 	/// 
-	/// @tparam	genTypeT Floating point scalar or vector.
-	/// @tparam genTypeU Floating point or boolean scalar or vector. It can't be a vector if it is the length of genTypeT.
+    /// @tparam vecType Floating point or boolean scalar or vector. It can't be a vector if it is the length of genTypeT.
 	/// 
 	/// @code
 	/// #include <glm/glm.hpp>
@@ -313,7 +312,7 @@ namespace glm
 	/// 
 	/// /!\ When using compiler fast math, this function may fail.
 	/// 
-	/// @tparam genType Floating-point scalar or vector types.
+    /// @tparam vecType Floating-point scalar or vector types.
 	///
 	/// @see <a href="http://www.opengl.org/sdk/docs/manglsl/xhtml/isnan.xml">GLSL isnan man page</a>
 	/// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.3 Common Functions</a>
@@ -326,7 +325,7 @@ namespace glm
 	/// otherwise, including for implementations with no infinity
 	/// representations.
 	/// 
-	/// @tparam genType Floating-point scalar or vector types.
+    /// @tparam vecType Floating-point scalar or vector types.
 	/// 
 	/// @see <a href="http://www.opengl.org/sdk/docs/manglsl/xhtml/isinf.xml">GLSL isinf man page</a>
 	/// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.3 Common Functions</a>

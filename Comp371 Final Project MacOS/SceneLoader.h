@@ -91,6 +91,7 @@ public:
 //Light Object
 class Light : public SceneObject {
 public:
+    //TODO: update light to take into acount the new parameters
 	glm::vec3 position;
 	glm::vec3 color;
 	Light(const glm::vec3 &posisiton, const glm::vec3 &color);
