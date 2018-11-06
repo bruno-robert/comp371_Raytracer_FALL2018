@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		152D5A6021923ECB0082CC96 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 152D5A5F21923ECB0082CC96 /* main.cpp */; };
+		152D5A6A219240BE0082CC96 /* PointLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 152D5A67219240BE0082CC96 /* PointLight.cpp */; };
+		152D5A6B219240BE0082CC96 /* SceneLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 152D5A68219240BE0082CC96 /* SceneLoader.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +27,10 @@
 /* Begin PBXFileReference section */
 		152D5A5C21923ECB0082CC96 /* Comp371 Final Project MacOS */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Comp371 Final Project MacOS"; sourceTree = BUILT_PRODUCTS_DIR; };
 		152D5A5F21923ECB0082CC96 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		152D5A66219240BE0082CC96 /* PointLight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PointLight.h; sourceTree = "<group>"; };
+		152D5A67219240BE0082CC96 /* PointLight.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PointLight.cpp; sourceTree = "<group>"; };
+		152D5A68219240BE0082CC96 /* SceneLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SceneLoader.cpp; sourceTree = "<group>"; };
+		152D5A69219240BE0082CC96 /* SceneLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SceneLoader.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +63,10 @@
 		152D5A5E21923ECB0082CC96 /* Comp371 Final Project MacOS */ = {
 			isa = PBXGroup;
 			children = (
+				152D5A67219240BE0082CC96 /* PointLight.cpp */,
+				152D5A66219240BE0082CC96 /* PointLight.h */,
+				152D5A68219240BE0082CC96 /* SceneLoader.cpp */,
+				152D5A69219240BE0082CC96 /* SceneLoader.h */,
 				152D5A5F21923ECB0082CC96 /* main.cpp */,
 			);
 			path = "Comp371 Final Project MacOS";
@@ -118,7 +128,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				152D5A6B219240BE0082CC96 /* SceneLoader.cpp in Sources */,
 				152D5A6021923ECB0082CC96 /* main.cpp in Sources */,
+				152D5A6A219240BE0082CC96 /* PointLight.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
