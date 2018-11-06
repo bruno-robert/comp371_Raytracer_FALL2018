@@ -1,7 +1,7 @@
 #include "SceneLoader.h"
 
 SceneObj::SceneObj() {
-	this->path = "placeholder.txt";
+    this->path = "/Users/Bruno/Desktop/test1234.txt";//WIN: change to win path
 	numberOfObjects = 0;
 }
 
@@ -35,7 +35,7 @@ bool SceneObj::loadScene() {
 		
 	}
 
-	std::cout << numberOfObjects << std::endl;
+    std::cout << "The scene has " << numberOfObjects << " objects" << std::endl;
 
 	while (ifs.good()) {//check if ther is a line
 		ifs.getline(line, LINE_SIZE);//retrieve current line
