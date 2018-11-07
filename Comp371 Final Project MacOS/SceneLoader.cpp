@@ -84,10 +84,10 @@ bool SceneObj::loadScene() {
                 err = true;
             }
             if(err) {
-                std::cout << "missing data in camera (something went wrong)" << std::endl;
+                std::cout << "missing data in camera (or something went wrong)" << std::endl;
             } else {
-                Camera Camera(pos, fov, fl, ar);
-                cameraArray.push_back(Camera);
+                Camera camera(pos, fov, fl, ar);
+                cameraArray.push_back(camera);
             }
             //MARK: verbose
             if (VERBOSE) {
@@ -101,7 +101,7 @@ bool SceneObj::loadScene() {
             glm::vec3 ambientColor;
             glm::vec3 diffuseColor;
             glm::vec3 specularColor;
-            float shininess;
+            float shininess = 0;
             bool err = false;
             
             if(ifs.good()) {//get position
@@ -152,12 +152,25 @@ bool SceneObj::loadScene() {
             } else {
                 err = true;
             }
-            
-            if(err) {
-                //TODO: code
+            if(ifs.good()) {//get position
+                ifs.getline(line, LINE_SIZE);
+                currentLine = line;
+                if(!getLineValue(line, &shininess, "shi:"))//get the value
+                    err = true;//if something went wrong set err to true
             } else {
-                //TODO: code
+                err = true;
             }
+
+            if(err) {
+                std::cout << "missing data in triangle (or something went wrong)" << std::endl;
+            } else {
+                //create triangle and push back
+                Triangle triangle(v1, v2, v3, ambientColor, diffuseColor, specularColor, shininess);
+                triangleArray.push_back(triangle);
+            }
+        }
+        else if(currentLine == "sphere" || currentLine == "sphere\n" || currentLine == "sphere\r\n" || currentLine == "sphere\r") {
+            
         }
 	}//END while
     

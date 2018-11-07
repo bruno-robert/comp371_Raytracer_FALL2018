@@ -121,6 +121,7 @@ public:
     std::vector<Sphere> sphereArray;
     std::vector<Mesh> meshArray;
     std::vector<Light> lightArray;
+    std::vector<Triangle> triangleArray;
 private:
 	const char * path;
 	int numberOfObjects;
