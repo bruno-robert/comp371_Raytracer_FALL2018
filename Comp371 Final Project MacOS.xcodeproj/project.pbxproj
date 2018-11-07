@@ -285,6 +285,7 @@
 		152D5B6C219242B30082CC96 /* projection.inl */ = {isa = PBXFileReference; lastKnownFileType = text; path = projection.inl; sourceTree = "<group>"; };
 		152D5B6D219242B30082CC96 /* multiple.inl */ = {isa = PBXFileReference; lastKnownFileType = text; path = multiple.inl; sourceTree = "<group>"; };
 		152D5B6E219242B30082CC96 /* type_aligned.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = type_aligned.hpp; sourceTree = "<group>"; };
+		152D5B7121933C570082CC96 /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -302,6 +303,7 @@
 			isa = PBXGroup;
 			children = (
 				152D5A5E21923ECB0082CC96 /* Comp371 Final Project MacOS */,
+				152D5B7121933C570082CC96 /* README */,
 				152D5A5D21923ECB0082CC96 /* Products */,
 			);
 			sourceTree = "<group>";
