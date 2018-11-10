@@ -66,12 +66,12 @@ public:
 //Mesh object
 class Mesh : public SceneObject {
 public:
-    const char * path;
+    char * path;
     glm::vec3 ambientColor;
     glm::vec3 diffuseColor;
     glm::vec3 specularColor;
     float shininess;
-    Mesh(const char * path, const glm::vec3 &ambientColor, const glm::vec3 &diffuseColor, const glm::vec3 &specularColor, float shininess);
+    Mesh(char * path, const glm::vec3 &ambientColor, const glm::vec3 &diffuseColor, const glm::vec3 &specularColor, float shininess);
 };
 
 class Triangle : public SceneObject {
@@ -102,6 +102,7 @@ public:
 static bool getLineValue(std::string str ,glm::vec3 *vec, const std::string &prefix);
 static bool getLineValue(std::string str ,int *val, const std::string &prefix);
 static bool getLineValue(std::string str ,float *val, const std::string &prefix);
+static bool getLineValue(std::string str ,char * path, const std::string &prefix);
 
 //----SceneObj----//
 //Scene objects load data from scene files and 

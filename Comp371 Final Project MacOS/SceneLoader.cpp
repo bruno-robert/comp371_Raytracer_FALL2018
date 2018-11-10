@@ -278,6 +278,22 @@ bool SceneObj::loadScene() {
                 Light light(position, ambient, diffuse, specular);
                 lightArray.push_back(light);
             }
+        } else if(currentLine == "mesh" || currentLine == "mesh\n" || currentLine == "mesh\r\n" || currentLine == "mesh\r") {
+            char * path;
+            glm::vec3 ambientColor;
+            glm::vec3 diffuseColor;
+            glm::vec3 specularColor;
+            float shininess = 0;
+            bool err = false;
+            if(ifs.good()) {//get position
+                ifs.getline(line, LINE_SIZE);
+                currentLine = line;
+                if(!getLineValue(line, path, ""))//get the value
+                err = true;//if something went wrong set err to true
+            } else {
+                err = true;
+            }
+
         }
 	}//END while
     
@@ -341,6 +357,22 @@ static bool getLineValue(std::string str ,float *val, const std::string &prefix)
     return 0;
 }
 
+static bool getLineValue(std::string str, char * path, const std::string &prefix) {
+    std::istringstream iss(str);
+    std::string word;
+    while(iss >> word || word == (prefix + ":")) {
+        if(word == prefix) {
+            iss >> word;
+            strcpy(path, word.c_str());
+            return 1;
+        } else {
+            std::cout << "prefix not recognised: " << word << std::endl;
+            return 0;
+        }
+    }
+    return 0;
+}
+
 //----Constructors for helper classes----//
 SceneObject::SceneObject() {
 
@@ -377,7 +409,7 @@ Sphere::Sphere(const glm::vec3 &position, float radius,
 	this->shininess = shininess;
 }
 
-Mesh::Mesh(const char * path, const glm::vec3 &ambientColor,
+Mesh::Mesh(char * path, const glm::vec3 &ambientColor,
 	const glm::vec3 &diffuseColor, const glm::vec3 &specularColor,
 	float shininess) 
 {
