@@ -170,6 +170,68 @@ bool SceneObj::loadScene() {
             }
         }
         else if(currentLine == "sphere" || currentLine == "sphere\n" || currentLine == "sphere\r\n" || currentLine == "sphere\r") {
+            glm::vec3 position;
+            float radius = 0;
+            glm::vec3 ambientColor;
+            glm::vec3 diffuseColor;
+            glm::vec3 specularColor;
+            float shininess = 0;
+            bool err = false;
+            if(ifs.good()) {//get position
+                ifs.getline(line, LINE_SIZE);
+                currentLine = line;
+                if(!getLineValue(line, &position, "pos:"))//get the value
+                err = true;//if something went wrong set err to true
+            } else {
+                err = true;
+            }
+            if(ifs.good()) {//get position
+                ifs.getline(line, LINE_SIZE);
+                currentLine = line;
+                if(!getLineValue(line, &radius, "rad:"))//get the value
+                err = true;//if something went wrong set err to true
+            } else {
+                err = true;
+            }
+            if(ifs.good()) {//get position
+                ifs.getline(line, LINE_SIZE);
+                currentLine = line;
+                if(!getLineValue(line, &ambientColor, "amb:"))//get the value
+                err = true;//if something went wrong set err to true
+            } else {
+                err = true;
+            }
+            if(ifs.good()) {//get position
+                ifs.getline(line, LINE_SIZE);
+                currentLine = line;
+                if(!getLineValue(line, &diffuseColor, "dif:"))//get the value
+                err = true;//if something went wrong set err to true
+            } else {
+                err = true;
+            }
+            if(ifs.good()) {//get position
+                ifs.getline(line, LINE_SIZE);
+                currentLine = line;
+                if(!getLineValue(line, &specularColor, "spe:"))//get the value
+                err = true;//if something went wrong set err to true
+            } else {
+                err = true;
+            }
+            if(ifs.good()) {//get position
+                ifs.getline(line, LINE_SIZE);
+                currentLine = line;
+                if(!getLineValue(line, &shininess, "shi:"))//get the value
+                err = true;//if something went wrong set err to true
+            } else {
+                err = true;
+            }
+            if(err) {
+                std::cout << "missing data in triangle (or something went wrong)" << std::endl;
+            } else {
+                //create triangle and push back
+                Sphere sphere(position, radius, ambientColor, diffuseColor, specularColor, shininess);
+                sphereArray.push_back(sphere);
+            }
             
         }
 	}//END while
