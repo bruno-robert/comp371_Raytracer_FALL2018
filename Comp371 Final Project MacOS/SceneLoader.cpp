@@ -233,6 +233,51 @@ bool SceneObj::loadScene() {
                 sphereArray.push_back(sphere);
             }
             
+        } else if(currentLine == "light" || currentLine == "light\n" || currentLine == "light\r\n" || currentLine == "light\r") {
+            glm::vec3 position;
+            glm::vec3 ambient;
+            glm::vec3 diffuse;
+            glm::vec3 specular;
+            bool err = false;
+            if(ifs.good()) {//get position
+                ifs.getline(line, LINE_SIZE);
+                currentLine = line;
+                if(!getLineValue(line, &position, "pos:"))//get the value
+                err = true;//if something went wrong set err to true
+            } else {
+                err = true;
+            }
+            if(ifs.good()) {//get position
+                ifs.getline(line, LINE_SIZE);
+                currentLine = line;
+                if(!getLineValue(line, &ambient, "amb:"))//get the value
+                err = true;//if something went wrong set err to true
+            } else {
+                err = true;
+            }
+            if(ifs.good()) {//get position
+                ifs.getline(line, LINE_SIZE);
+                currentLine = line;
+                if(!getLineValue(line, &diffuse, "dif:"))//get the value
+                err = true;//if something went wrong set err to true
+            } else {
+                err = true;
+            }
+            if(ifs.good()) {//get position
+                ifs.getline(line, LINE_SIZE);
+                currentLine = line;
+                if(!getLineValue(line, &specular, "spe:"))//get the value
+                err = true;//if something went wrong set err to true
+            } else {
+                err = true;
+            }
+            if(err) {
+                std::cout << "missing data in triangle (or something went wrong)" << std::endl;
+            } else {
+                //create triangle and push back
+                Light light(position, ambient, diffuse, specular);
+                lightArray.push_back(light);
+            }
         }
 	}//END while
     
