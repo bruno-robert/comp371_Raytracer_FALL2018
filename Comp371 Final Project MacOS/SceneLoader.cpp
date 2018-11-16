@@ -303,6 +303,24 @@ bool SceneObj::loadScene() {
 	return true;
 }
 
+void SceneObj::getObjectInfo() {
+    std::string str;
+    
+    std::cout << "There are: " << cameraArray.size() << " Camera Objects\n" << std::endl;
+    
+    std::cout << "There are: " << planeArray.size() << " Plane Objects\n" << std::endl;
+    
+    std::cout << "There are: " << sphereArray.size() << " Sphere Objects\n" << std::endl;
+    
+    std::cout << "There are: " << meshArray.size() << " Mesh Objects\n" << std::endl;
+    
+    std::cout << "There are: " << lightArray.size() << " Light Objects\n" << std::endl;
+    
+    std::cout << "There are: " << triangleArray.size() << " Triangle Objects\n" << std::endl;
+    
+    
+}
+
 //----helper functions----//
 static bool getLineValue(std::string str, glm::vec3 *vec, const std::string &prefix) {
     std::istringstream iss(str);

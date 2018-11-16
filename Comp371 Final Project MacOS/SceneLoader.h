@@ -116,6 +116,7 @@ public:
 	bool loadScene();
 	void setNumberOfObjects(int number);
 	int getNumberOfObjects();
+    void getObjectInfo();
     //std::vector<SceneObject*> objectArray;//MARK: removable old
     std::vector<Camera> cameraArray;
     std::vector<Plane> planeArray;

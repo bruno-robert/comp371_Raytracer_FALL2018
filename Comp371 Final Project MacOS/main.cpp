@@ -20,5 +20,7 @@ int main(int argc, const char * argv[]) {
     SceneObj scene("/Users/bruno/Xcode/comp371_xcode/Comp371 Final Project MacOS/Scene_Files/scene1.txt");
     scene.loadScene();
     
+    scene.getObjectInfo();
+    
     return 0;
 }
