@@ -17,7 +17,7 @@ int main(int argc, const char * argv[]) {
 //    outfile << "this is a test" << std::endl;
 //    outfile.close();
     
-    SceneObj scene("/Users/bruno/Xcode/comp371_xcode/Comp371 Final Project MacOS/Scene_Files/scene1.txt");
+    SceneObj scene("/Users/Bruno/OneDrive - Concordia University - Canada/Documents/Concordia/Fall 2018/Comp 371/Xcode/Comp371 Final Project MacOS/Comp371 Final Project MacOS/Scene_Files/scene1.txt");
     scene.loadScene();
     
     scene.getObjectInfo();
