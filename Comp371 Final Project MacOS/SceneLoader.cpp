@@ -1,20 +1,20 @@
 #include "SceneLoader.h"
 
-SceneObj::SceneObj() {
+Scene::Scene() {
     this->path = "/Users/Bruno/Desktop/test1234.txt";//WIN: change to win path
 	numberOfObjects = 0;
 }
 
-SceneObj::SceneObj(const char * path) {
+Scene::Scene(const char * path) {
 	this->path = path;
 	numberOfObjects = 0;
 }
 
-SceneObj::~SceneObj() {
+Scene::~Scene() {
     //TODO: delete objectArray properly
 }
 
-bool SceneObj::loadScene() {
+bool Scene::loadScene() {
 	std::ifstream ifs;
 	ifs.open(path, std::fstream::in);
 	if (!ifs.is_open()) {
@@ -43,7 +43,6 @@ bool SceneObj::loadScene() {
     //loop through file and instanciate each object
 	while (ifs.good()) {//check if ther is a line
 		ifs.getline(line, LINE_SIZE);//retrieve current line
-        //std::cout << line << std::endl;//MARK: removable
         std::string currentLine = line;
         if(currentLine == "camera" || currentLine == "camera\n" || currentLine == "camera\r\n" || currentLine == "camera\r") {
             glm::vec3 pos = glm::vec3(0.0f);//position
@@ -283,7 +282,7 @@ bool SceneObj::loadScene() {
             glm::vec3 ambientColor;
             glm::vec3 diffuseColor;
             glm::vec3 specularColor;
-            float shininess = 0;
+            float shininess = 0;//TODO: finish Mesh
             bool err = false;
             if(ifs.good()) {//get position
                 ifs.getline(line, LINE_SIZE);
@@ -303,7 +302,7 @@ bool SceneObj::loadScene() {
 	return true;
 }
 
-void SceneObj::getObjectInfo() {
+void Scene::getObjectInfo() {
     std::string str;
     
     std::cout << "There are: " << cameraArray.size() << " Camera Objects\n" << std::endl;

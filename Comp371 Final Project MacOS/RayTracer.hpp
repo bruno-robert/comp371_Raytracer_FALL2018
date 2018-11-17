@@ -11,15 +11,25 @@
 
 #include <stdio.h>
 #include "SceneLoader.h"
+#include "glm.hpp"//glm
+
+#if defined __linux__ || defined __APPLE__
+// "Compiled for Linux
+#else
+// Windows doesn't define these values by default, Linux does
+#define M_PI 3.141592653589793
+#define INFINITY 1e8
+#endif
 
 class RayTracer {
 public:
-    RayTracer(SceneObj * scene);
+    RayTracer(Scene * scene, int width, int height);
     ~RayTracer();
+    glm::vec3 trace(glm::vec3 &origin, glm::vec3 &pixelPos, int depth);
+    void raytrace();
 private:
-    SceneObj Scene;
-    int width, height;//width and heigh of the image
-    
+    Scene * scene;//scene object containing all the information of the scene
+    int width, height;//width and heigh of the image (i.e. resolution)
 };
 
 

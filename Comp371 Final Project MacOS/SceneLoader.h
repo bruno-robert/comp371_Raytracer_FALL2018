@@ -17,6 +17,7 @@ const bool VERBOSE = true;//MARK: debug verbose on/off
 class SceneObject {
 public:
     SceneObject();
+    bool intersect(const glm::vec3 origin, const glm::vec3 pixelPos, int i1, int i2);
 };
 
 //camera object
@@ -107,12 +108,12 @@ static bool getLineValue(std::string str ,char * path, const std::string &prefix
 //----SceneObj----//
 //Scene objects load data from scene files and 
 //store the data in various objects that are declared bellow
-class SceneObj 
+class Scene 
 {
 public:
-	SceneObj();
-	SceneObj(const char * path);
-    ~SceneObj();
+	Scene();
+	Scene(const char * path);
+    ~Scene();
 	bool loadScene();
 	void setNumberOfObjects(int number);
 	int getNumberOfObjects();
