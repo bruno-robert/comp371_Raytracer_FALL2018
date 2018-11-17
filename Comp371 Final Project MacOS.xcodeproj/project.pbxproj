@@ -10,6 +10,7 @@
 		152D5A6021923ECB0082CC96 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 152D5A5F21923ECB0082CC96 /* main.cpp */; };
 		152D5A6A219240BE0082CC96 /* PointLight.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 152D5A67219240BE0082CC96 /* PointLight.cpp */; };
 		152D5A6B219240BE0082CC96 /* SceneLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 152D5A68219240BE0082CC96 /* SceneLoader.cpp */; };
+		155E0530219FD6CD0029CA33 /* RayTracer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 155E052E219FD6CD0029CA33 /* RayTracer.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -286,6 +287,8 @@
 		152D5B6D219242B30082CC96 /* multiple.inl */ = {isa = PBXFileReference; lastKnownFileType = text; path = multiple.inl; sourceTree = "<group>"; };
 		152D5B6E219242B30082CC96 /* type_aligned.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = type_aligned.hpp; sourceTree = "<group>"; };
 		152D5B7121933C570082CC96 /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		155E052E219FD6CD0029CA33 /* RayTracer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = RayTracer.cpp; sourceTree = "<group>"; };
+		155E052F219FD6CD0029CA33 /* RayTracer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = RayTracer.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -325,6 +328,8 @@
 				152D5A68219240BE0082CC96 /* SceneLoader.cpp */,
 				152D5A69219240BE0082CC96 /* SceneLoader.h */,
 				152D5A5F21923ECB0082CC96 /* main.cpp */,
+				155E052E219FD6CD0029CA33 /* RayTracer.cpp */,
+				155E052F219FD6CD0029CA33 /* RayTracer.hpp */,
 			);
 			path = "Comp371 Final Project MacOS";
 			sourceTree = "<group>";
@@ -673,6 +678,7 @@
 				152D5A6B219240BE0082CC96 /* SceneLoader.cpp in Sources */,
 				152D5A6021923ECB0082CC96 /* main.cpp in Sources */,
 				152D5A6A219240BE0082CC96 /* PointLight.cpp in Sources */,
+				155E0530219FD6CD0029CA33 /* RayTracer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
