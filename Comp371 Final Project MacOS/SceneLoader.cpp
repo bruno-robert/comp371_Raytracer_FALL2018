@@ -426,6 +426,26 @@ Sphere::Sphere(const glm::vec3 &position, float radius,
 	this->shininess = shininess;
 }
 
+/*
+ Returns true if there is an intersection between the given line and the sphere i1 and i2 are the two intersection points. We usually want to use the closest one.
+ */
+bool Sphere::intersect(const glm::vec3 origin, const glm::vec3 direction, float &i1, float &i2) {
+    float radius2 = radius * radius;//radius squared
+    glm::vec3 l = position - origin;//line from the origin (camera) to the center of the sphere
+    float tca = glm::dot(l, direction);
+    if (tca < 0) return false;//if the scphere is behind the view plane return false of course
+    float d2 = glm::dot(l, l) - tca * tca;
+    if (d2 > radius2) return false;//the line doesn't intersect
+    float thc = sqrt(radius2 - d2);
+    
+    //first and seccond solution of the equation (the two intersection points)
+    i1 = tca - thc;
+    i2 = tca + thc;
+    
+    return true;
+    
+}
+
 Mesh::Mesh(char * path, const glm::vec3 &ambientColor,
 	const glm::vec3 &diffuseColor, const glm::vec3 &specularColor,
 	float shininess) 

@@ -17,7 +17,7 @@ const bool VERBOSE = true;//MARK: debug verbose on/off
 class SceneObject {
 public:
     SceneObject();
-    bool intersect(const glm::vec3 origin, const glm::vec3 pixelPos, int i1, int i2);
+    bool intersect(const glm::vec3 origin, const glm::vec3 direction, float &i1, float &i2);
 };
 
 //camera object
@@ -62,6 +62,7 @@ public:
            const glm::vec3 &diffuseColor,
            const glm::vec3 &specularColor,
            float shininess);
+    bool intersect(const glm::vec3 origin, const glm::vec3 direction, float &i1, float &i2);
 };
 
 //Mesh object
