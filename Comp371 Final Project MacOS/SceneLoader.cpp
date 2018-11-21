@@ -1,5 +1,215 @@
 #include "SceneLoader.h"
 
+//----Constructors for helper classes----//
+SceneObject::SceneObject() {
+    
+}
+
+SceneObject::SceneObject(const glm::vec3 &ambientColor, const glm::vec3 &diffuseColor, const glm::vec3 &specularColor, float shininess) {
+    this->ambientColor = ambientColor;
+    this->diffuseColor = diffuseColor;
+    this->specularColor = specularColor;
+    this->shininess = shininess;
+}
+
+bool SceneObject::intersect(const glm::vec3 &origin, const glm::vec3 &direction, float &i1, float &i2) {
+    std::cout << "This is the base class, this isn't right!" << std::endl;
+    return false;
+}
+glm::vec3 SceneObject::getNormal(const glm::vec3 &intersection) {
+    std::cout << "This is the base class, this isn't right!" << std::endl;
+    glm::vec3 a = glm::vec3(0.0f);
+    return a;
+}
+
+
+Camera::Camera(glm::vec3 position, int fov, int focalLength, float aspectRatio) {
+    this->position = position;
+    this->fov = fov;
+    this->focalLength = focalLength;
+    this->aspectRatio = aspectRatio;
+}
+
+Plane::Plane(const glm::vec3 &normal, const glm::vec3 &position,
+             const glm::vec3 &ambientColor, const glm::vec3 &diffuseColor,
+             const glm::vec3 &specularColor, float shininess) : SceneObject(ambientColor, diffuseColor, specularColor, shininess)
+{
+    this->normal = normal;
+    this->position = position;
+}
+
+bool Plane::intersect(const glm::vec3 &origin, const glm::vec3 &direction, float &i1, float &i2) {
+    if(glm::dot(direction, normal) == 0) {
+        //the direction is parallel to the plane so just return false
+        return false;
+    }
+    
+    
+    
+    return false;//TODO:
+}
+
+glm::vec3 Plane::getNormal(const glm::vec3 &intersection) {
+    return this->normal;
+}
+
+Sphere::Sphere(const glm::vec3 &position, float radius,
+               const glm::vec3 &ambientColor, const glm::vec3 &diffuseColor,
+               const glm::vec3 &specularColor, float shininess){
+    this->ambientColor = ambientColor;
+    this->diffuseColor = diffuseColor;
+    this->specularColor = specularColor;
+    this->position = position;
+    this->radius = radius;
+    this->shininess = shininess;
+}
+
+/*
+ Returns true if there is an intersection between the given line and the sphere i1 and i2 are the two intersection points. We usually want to use the closest one.
+ */
+bool Sphere::intersect(const glm::vec3 &origin, const glm::vec3 &direction, float &i1, float &i2) {
+    float radius2 = radius * radius;//radius squared
+    glm::vec3 l = position - origin;//(¨L)line from the origin (camera) to the center of the sphere
+    float tca = glm::dot(l, direction);//(tc)length of line that goes from origin to between the 2 intersections
+    if (tca < 0) return false;//return false
+    float d2 = glm::dot(l, l) - tca * tca;//sqrt(d2) = the distance between position and origin + direction * infinity
+    if (d2 > radius2) return false;//the line doesn't intersect
+    float thc = sqrt(radius2 - d2);//half the distance between the points
+    
+    //first and seccond solution of the equation (the two intersection points)
+    i1 = tca - thc;
+    i2 = tca + thc;
+    //kylehalladay.com/blog/tutorial/math/2013/12/24/Ray-Sphere-Intersection.html explais this quite well although the naming is different
+    return true;
+    
+    
+}
+
+glm::vec3 Sphere::getNormal(const glm::vec3 &intersection) {
+    glm::vec3 normal = position - intersection;
+    return -normal;//we need a normal from the center to the outside
+}
+
+Mesh::Mesh(char * path, const glm::vec3 &ambientColor,
+           const glm::vec3 &diffuseColor, const glm::vec3 &specularColor,
+           float shininess) : SceneObject(ambientColor, diffuseColor, specularColor, shininess)
+{
+    this->path = path;
+}
+
+bool Mesh::intersect(const glm::vec3 &origin, const glm::vec3 &direction, float &i1, float &i2) {
+    return false;//TODO:
+}
+
+glm::vec3 Mesh::getNormal(const glm::vec3 &intersection) {
+    glm::vec3 a = glm::vec3(0.0f);
+    return a;//TODO:
+}
+
+Triangle::Triangle(const glm::vec3 &v1, const glm::vec3 &v2, const glm::vec3 &v3, const glm::vec3 &ambientColor, const glm::vec3 &diffuseColor, const glm::vec3 &specularColor, float shininess) : SceneObject(ambientColor, diffuseColor, specularColor, shininess) {
+    this->v1 = v1;
+    this->v2 = v2;
+    this->v3 = v3;
+}
+
+bool Triangle::intersect(const glm::vec3 &origin, const glm::vec3 &direction, float &i1, float &i2) {
+    glm::vec3 tNormal = glm::cross((v1 - v2), (v2 - v3));//vector that is normal to the triangle's plane
+    tNormal = glm::normalize(tNormal);
+    
+    if(glm::dot(direction, tNormal) == 0) {
+        //the direction is parallel to the plane so just return false
+        return false;
+    }
+    //the direction is not parallel to the plane
+    //check if the intersection happens inside or outside of the triangle
+    
+    
+    return false;//TODO:
+}
+
+glm::vec3 Triangle::getNormal(const glm::vec3 &intersection) {
+    glm::vec3 a = glm::vec3(0.0f);
+    return a;//TODO:
+}
+
+Light::Light(const glm::vec3 &posisiton, const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular) {
+    this->position = position;
+    this->ambient = ambient;
+    this->diffuse = diffuse;
+    this->specular = specular;
+}
+
+//----helper functions----//
+static bool getLineValue(std::string str, glm::vec3 *vec, const std::string &prefix) {
+    std::istringstream iss(str);
+    std::string word;
+    while(iss >> word) {
+        if(word == prefix || word == (prefix + ":")) {//FIXME: this doesn't check if the word already has the ":" and ths could accept words of type "word::" (same for other getLineValue() methods
+            iss >> word;
+            vec->x = std::stof(word);
+            iss >> word;
+            vec->y = std::stof(word);
+            iss >> word;
+            vec->z = std::stof(word);
+            return 1;
+        } else {
+            std::cout << "prefix not recognised: " << word << std::endl;
+            return 0;
+        }
+    }
+    return 0;
+}
+
+static bool getLineValue(std::string str ,int *val, const std::string &prefix) {
+    std::istringstream iss(str);
+    std::string word;
+    while(iss >> word) {
+        if(word == prefix || word == (prefix + ":")) {
+            iss >> word;
+            *val = std::stoi(word);
+            return 1;
+        } else {
+            std::cout << "prefix not recognised: " << word << std::endl;
+            return 0;
+        }
+    }
+    return 0;
+    
+}
+
+static bool getLineValue(std::string str ,float *val, const std::string &prefix) {
+    std::istringstream iss(str);
+    std::string word;
+    while(iss >> word || word == (prefix + ":")) {
+        if(word == prefix) {
+            iss >> word;
+            *val = std::stof(word);
+            return 1;
+        } else {
+            std::cout << "prefix not recognised: " << word << std::endl;
+            return 0;
+        }
+    }
+    return 0;
+}
+
+static bool getLineValue(std::string str, char * path, const std::string &prefix) {
+    std::istringstream iss(str);
+    std::string word;
+    while(iss >> word || word == (prefix + ":")) {
+        if(word == prefix) {
+            iss >> word;
+            strcpy(path, word.c_str());
+            return 1;
+        } else {
+            std::cout << "prefix not recognised: " << word << std::endl;
+            return 0;
+        }
+    }
+    return 0;
+}
+
+
 Scene::Scene() {
     this->path = "/Users/Bruno/Desktop/test1234.txt";//WIN: change to win path
 	numberOfObjects = 0;
@@ -302,6 +512,14 @@ bool Scene::loadScene() {
 	return true;
 }
 
+void Scene::setNumberOfObjects(int number) {
+    this->numberOfObjects = number;
+}
+
+int Scene::getNumberOfObjects() {
+    return this->numberOfObjects;
+}
+
 void Scene::getObjectInfo() {
     std::string str;
     
@@ -320,156 +538,5 @@ void Scene::getObjectInfo() {
     
 }
 
-//----helper functions----//
-static bool getLineValue(std::string str, glm::vec3 *vec, const std::string &prefix) {
-    std::istringstream iss(str);
-    std::string word;
-    while(iss >> word) {
-        if(word == prefix || word == (prefix + ":")) {//FIXME: this doesn't check if the word already has the ":" and ths could accept words of type "word::" (same for other getLineValue() methods
-            iss >> word;
-            vec->x = std::stoi(word);
-            iss >> word;
-            vec->x = std::stoi(word);
-            iss >> word;
-            vec->x = std::stoi(word);
-            return 1;
-        } else {
-            std::cout << "prefix not recognised: " << word << std::endl;
-            return 0;
-        }
-    }
-    return 0;
-}
 
-static bool getLineValue(std::string str ,int *val, const std::string &prefix) {
-    std::istringstream iss(str);
-    std::string word;
-    while(iss >> word) {
-        if(word == prefix || word == (prefix + ":")) {
-            iss >> word;
-            *val = std::stoi(word);
-            return 1;
-        } else {
-            std::cout << "prefix not recognised: " << word << std::endl;
-            return 0;
-        }
-    }
-    return 0;
 
-}
-
-static bool getLineValue(std::string str ,float *val, const std::string &prefix) {
-    std::istringstream iss(str);
-    std::string word;
-    while(iss >> word || word == (prefix + ":")) {
-        if(word == prefix) {
-            iss >> word;
-            *val = std::stof(word);
-            return 1;
-        } else {
-            std::cout << "prefix not recognised: " << word << std::endl;
-            return 0;
-        }
-    }
-    return 0;
-}
-
-static bool getLineValue(std::string str, char * path, const std::string &prefix) {
-    std::istringstream iss(str);
-    std::string word;
-    while(iss >> word || word == (prefix + ":")) {
-        if(word == prefix) {
-            iss >> word;
-            strcpy(path, word.c_str());
-            return 1;
-        } else {
-            std::cout << "prefix not recognised: " << word << std::endl;
-            return 0;
-        }
-    }
-    return 0;
-}
-
-//----Constructors for helper classes----//
-SceneObject::SceneObject() {
-
-}
-
-Camera::Camera(glm::vec3 position, int fov, int focalLength, float aspectRatio) {
-	this->position = position;
-	this->fov = fov;
-	this->focalLength = focalLength;
-	this->aspectRatio = aspectRatio;
-}
-
-Plane::Plane(const glm::vec3 &normal, const glm::vec3 &position,
-	const glm::vec3 &ambientColor, const glm::vec3 &diffuseColor,
-	const glm::vec3 &specularColor, float shininess) 
-{
-	this->normal = normal;
-	this->position = position;
-	this->ambientColor = ambientColor;
-	this->diffuseColor = diffuseColor;
-	this->specularColor = specularColor;
-	this->shininess = shininess;
-}
-
-Sphere::Sphere(const glm::vec3 &position, float radius,
-	const glm::vec3 &ambientColor, const glm::vec3 &diffuseColor,
-	const glm::vec3 &specularColor, float shininess) 
-{
-	this->position = position;
-	this->radius = radius;
-	this->ambientColor = ambientColor;
-	this->diffuseColor = diffuseColor;
-	this->specularColor = specularColor;
-	this->shininess = shininess;
-}
-
-/*
- Returns true if there is an intersection between the given line and the sphere i1 and i2 are the two intersection points. We usually want to use the closest one.
- */
-bool Sphere::intersect(const glm::vec3 origin, const glm::vec3 direction, float &i1, float &i2) {
-    float radius2 = radius * radius;//radius squared
-    glm::vec3 l = position - origin;//line from the origin (camera) to the center of the sphere
-    float tca = glm::dot(l, direction);
-    if (tca < 0) return false;//if the scphere is behind the view plane return false of course
-    float d2 = glm::dot(l, l) - tca * tca;
-    if (d2 > radius2) return false;//the line doesn't intersect
-    float thc = sqrt(radius2 - d2);
-    
-    //first and seccond solution of the equation (the two intersection points)
-    i1 = tca - thc;
-    i2 = tca + thc;
-    
-    return true;
-    
-}
-
-Mesh::Mesh(char * path, const glm::vec3 &ambientColor,
-	const glm::vec3 &diffuseColor, const glm::vec3 &specularColor,
-	float shininess) 
-{
-	this->path = path;
-	this->ambientColor = ambientColor;
-	this->diffuseColor = diffuseColor;
-	this->specularColor = specularColor; 
-	this->shininess = shininess;
-}
-
-Triangle::Triangle(const glm::vec3 &v1, const glm::vec3 &v2, const glm::vec3 &v3, const glm::vec3 &ambientColor, const glm::vec3 &diffuseColor, const glm::vec3 &specularColor, float shininess) {
-    this->v1 = v1;
-    this->v2 = v2;
-    this->v3 = v3;
-    this->ambientColor = ambientColor;
-    this->diffuseColor = diffuseColor;
-    this->specularColor = specularColor;
-    this->shininess = shininess;
-}
-
-Light::Light(const glm::vec3 &posisiton, const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular) {
-	this->position = position;
-	this->ambient = ambient;
-    this->diffuse = diffuse;
-    this->specular = specular;
-}

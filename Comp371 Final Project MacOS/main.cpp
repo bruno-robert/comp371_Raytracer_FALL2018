@@ -5,6 +5,7 @@
 //  Created by Bruno Robert on 06/11/2018.
 //  Copyright © 2018 Bruno Robert. All rights reserved.
 //
+// With help from kylehalladay.com/blog/tutorial/math/2013/12/24/Ray-Sphere-Intersection.html
 // With potential snipets from www.scratchapixel.com/code.php?id=3&origin=/lessons/3d-basic-rendering/introduction-to-ray-tracing
 
 #include <iostream>
@@ -19,12 +20,23 @@ int main(int argc, const char * argv[]) {
 //    outfile << "this is a test" << std::endl;
 //    outfile.close();
     
-    Scene scene("/Users/Bruno/OneDrive - Concordia University - Canada/Documents/Concordia/Fall 2018/Comp 371/Xcode/Comp371 Final Project MacOS/Comp371 Final Project MacOS/Scene_Files/scene1.txt");
+    char const * filePath = "/Users/Bruno/OneDrive - Concordia University - Canada/Documents/Concordia/Fall 2018/Comp 371/Xcode/Comp371 Final Project MacOS/Comp371 Final Project MacOS/Scene_Files/scene2.txt";
+    
+    
+    Scene scene(filePath);
     scene.loadScene();
     
     scene.getObjectInfo();
+    int b = 0;
+    std::cout << scene.sphereArray[b].position.x << std::endl;
+    std::cout << scene.sphereArray[b].position.y << std::endl;
+    std::cout << scene.sphereArray[b].position.z << std::endl;
     
-    RayTracer rt(&scene, 640, 480);
+    std::string outputFile = "/Users/Bruno/OneDrive - Concordia University - Canada/Documents/Concordia/Fall 2018/Comp 371/Xcode/Comp371 Final Project MacOS/Comp371 Final Project MacOS/bruno-first-render.ppm";
+    
+    RayTracer rt(&scene, 1920, outputFile);
+    
+    rt.raytrace();
 
     
     return 0;

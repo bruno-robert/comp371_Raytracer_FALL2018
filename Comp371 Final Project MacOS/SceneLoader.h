@@ -17,11 +17,20 @@ const bool VERBOSE = true;//MARK: debug verbose on/off
 class SceneObject {
 public:
     SceneObject();
-    bool intersect(const glm::vec3 origin, const glm::vec3 direction, float &i1, float &i2);
+    SceneObject(const glm::vec3 &ambientColor, const glm::vec3 &diffuseColor, const glm::vec3 &specularColor, float shininess);
+    //TODO: add color attributes
+    virtual bool intersect(const glm::vec3 &origin, const glm::vec3 &direction, float &i1, float &i2);//TODO: implement in all the children
+    virtual glm::vec3 getNormal(const glm::vec3 &intersection);//TODO: implement this in all the children
+    
+    
+    glm::vec3 ambientColor;
+    glm::vec3 diffuseColor;
+    glm::vec3 specularColor;
+    float shininess;
 };
 
 //camera object
-class Camera : public SceneObject {
+class Camera {
 public:
     glm::vec3 position;
     int fov;
@@ -35,16 +44,14 @@ class Plane : public SceneObject {
 public:
     glm::vec3 normal;
     glm::vec3 position;
-    glm::vec3 ambientColor;
-    glm::vec3 diffuseColor;
-    glm::vec3 specularColor;
-    float shininess;
     Plane(const glm::vec3 &normal,
           const glm::vec3 &position,
           const glm::vec3 &ambientColor,
           const glm::vec3 &diffuseColor,
           const glm::vec3 &specularColor,
           float shininess);
+    bool intersect(const glm::vec3 &origin, const glm::vec3 &direction, float &i1, float &i2);
+    glm::vec3 getNormal(const glm::vec3 &intersection);
 };
 
 //sphere object
@@ -52,28 +59,23 @@ class Sphere : public SceneObject {
 public:
     glm::vec3 position;
     float radius;
-    glm::vec3 ambientColor;
-    glm::vec3 diffuseColor;
-    glm::vec3 specularColor;
-    float shininess;
     Sphere(const glm::vec3 &position,
            float radius,
            const glm::vec3 &ambientColor,
            const glm::vec3 &diffuseColor,
            const glm::vec3 &specularColor,
            float shininess);
-    bool intersect(const glm::vec3 origin, const glm::vec3 direction, float &i1, float &i2);
+    bool intersect(const glm::vec3 &origin, const glm::vec3 &direction, float &i1, float &i2);
+    glm::vec3 getNormal(const glm::vec3 &intersection);
 };
 
 //Mesh object
 class Mesh : public SceneObject {
 public:
     char * path;
-    glm::vec3 ambientColor;
-    glm::vec3 diffuseColor;
-    glm::vec3 specularColor;
-    float shininess;
     Mesh(char * path, const glm::vec3 &ambientColor, const glm::vec3 &diffuseColor, const glm::vec3 &specularColor, float shininess);
+    bool intersect(const glm::vec3 &origin, const glm::vec3 &direction, float &i1, float &i2);
+    glm::vec3 getNormal(const glm::vec3 &intersection);
 };
 
 class Triangle : public SceneObject {
@@ -84,12 +86,13 @@ public:
     glm::vec3 ambientColor;
     glm::vec3 diffuseColor;
     glm::vec3 specularColor;
-    float shininess;
     Triangle(const glm::vec3 &v1, const glm::vec3 &v2, const glm::vec3 &v3, const glm::vec3 &ambientColor, const glm::vec3 &diffuseColor, const glm::vec3 &specularColor, float shininess);
+    bool intersect(const glm::vec3 &origin, const glm::vec3 &direction, float &i1, float &i2);
+    glm::vec3 getNormal(const glm::vec3 &intersection);
 };
 
 //Light Object
-class Light : public SceneObject {
+class Light {
 public:
     glm::vec3 position;
     glm::vec3 ambient;

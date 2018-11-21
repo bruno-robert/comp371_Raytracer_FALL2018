@@ -10,6 +10,7 @@
 #define RayTracer_hpp
 
 #include <stdio.h>
+#include <math.h>
 #include "SceneLoader.h"
 #include "glm.hpp"//glm
 
@@ -23,11 +24,12 @@
 
 class RayTracer {
 public:
-    RayTracer(Scene * scene, int width, int height);
+    RayTracer(Scene * scene, int width, std::string outputPath);
     ~RayTracer();
     glm::vec3 trace(glm::vec3 &origin, glm::vec3 &pixelPos, int depth);
     void raytrace();
 private:
+    std::string outputPath;
     Scene * scene;//scene object containing all the information of the scene
     int width, height;//width and heigh of the image (i.e. resolution)
 };
