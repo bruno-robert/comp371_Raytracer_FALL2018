@@ -27,10 +27,6 @@ int main(int argc, const char * argv[]) {
     scene.loadScene();
     
     scene.getObjectInfo();
-    int b = 0;
-    std::cout << scene.sphereArray[b].position.x << std::endl;
-    std::cout << scene.sphereArray[b].position.y << std::endl;
-    std::cout << scene.sphereArray[b].position.z << std::endl;
     
     std::string outputFile = "/Users/Bruno/OneDrive - Concordia University - Canada/Documents/Concordia/Fall 2018/Comp 371/Xcode/Comp371 Final Project MacOS/Comp371 Final Project MacOS/bruno-first-render.ppm";
     
