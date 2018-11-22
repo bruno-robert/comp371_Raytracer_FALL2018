@@ -1,5 +1,86 @@
 #include "SceneLoader.h"
 
+//----helper functions----//
+//getLineValue checks the line prefix for validity and then sets the given variable with the line's value
+//multiple overloads for different variables types
+//TODO: get these to throw exeptions
+static bool getLineValue(std::string str, glm::vec3 *vec, const std::string &prefix) {
+    std::istringstream iss(str);
+    std::string word;
+    while(iss >> word) {
+        if(word == prefix || word == (prefix + ":")) {//FIXME: this doesn't check if the word already has the ":" and ths could accept words of type "word::" (same for other getLineValue() methods
+            iss >> word;
+            vec->x = std::stof(word);
+            iss >> word;
+            vec->y = std::stof(word);
+            iss >> word;
+            vec->z = std::stof(word);
+            return 1;
+        } else {
+            std::cout << "prefix not recognised: " << word << std::endl;
+            return 0;
+        }
+    }
+    return 0;
+}
+
+static bool getLineValue(std::string str ,int *val, const std::string &prefix) {
+    std::istringstream iss(str);
+    std::string word;
+    while(iss >> word) {
+        if(word == prefix || word == (prefix + ":")) {
+            iss >> word;
+            *val = std::stoi(word);
+            return 1;
+        } else {
+            std::cout << "prefix not recognised: " << word << std::endl;
+            return 0;
+        }
+    }
+    return 0;
+    
+}
+
+static bool getLineValue(std::string str ,float *val, const std::string &prefix) {
+    std::istringstream iss(str);
+    std::string word;
+    while(iss >> word) {
+        if(word == prefix || word == (prefix + ":")) {
+            iss >> word;
+            *val = std::stof(word);
+            return 1;
+        } else {
+            std::cout << "prefix not recognised: " << word << std::endl;
+            return 0;
+        }
+    }
+    return 0;
+}
+
+static bool getLineValue(std::string str, char * path, const std::string &prefix) {
+    std::istringstream iss(str);
+    std::string word;
+    if(prefix == "") {//if there is no prefix
+        while(iss >> word) {
+            strcpy(path, word.c_str());
+            return 1;
+        }
+    }
+    
+    
+    while(iss >> word) {
+        if(word == prefix || word == (prefix + ":")) {
+            iss >> word;
+            strcpy(path, word.c_str());
+            return 1;
+        } else {
+            std::cout << "prefix not recognised: " << word << std::endl;
+            return 0;
+        }
+    }
+    return 0;
+}
+
 //----Constructors for helper classes----//
 SceneObject::SceneObject() {
     
@@ -45,7 +126,6 @@ bool Plane::intersect(const glm::vec3 &origin, const glm::vec3 &direction, float
     }
     
     
-    
     return false;//TODO:
 }
 
@@ -86,8 +166,9 @@ bool Sphere::intersect(const glm::vec3 &origin, const glm::vec3 &direction, floa
 }
 
 glm::vec3 Sphere::getNormal(const glm::vec3 &intersection) {
-    glm::vec3 normal = position - intersection;
-    return -normal;//we need a normal from the center to the outside
+    glm::vec3 normal = intersection - position;
+    normal = glm::normalize(normal);
+    return normal;//we need a normal from the center to the outside
 }
 
 Mesh::Mesh(char * path, const glm::vec3 &ambientColor,
@@ -139,77 +220,6 @@ Light::Light(const glm::vec3 &posisiton, const glm::vec3 &ambient, const glm::ve
     this->specular = specular;
 }
 
-//----helper functions----//
-static bool getLineValue(std::string str, glm::vec3 *vec, const std::string &prefix) {
-    std::istringstream iss(str);
-    std::string word;
-    while(iss >> word) {
-        if(word == prefix || word == (prefix + ":")) {//FIXME: this doesn't check if the word already has the ":" and ths could accept words of type "word::" (same for other getLineValue() methods
-            iss >> word;
-            vec->x = std::stof(word);
-            iss >> word;
-            vec->y = std::stof(word);
-            iss >> word;
-            vec->z = std::stof(word);
-            return 1;
-        } else {
-            std::cout << "prefix not recognised: " << word << std::endl;
-            return 0;
-        }
-    }
-    return 0;
-}
-
-static bool getLineValue(std::string str ,int *val, const std::string &prefix) {
-    std::istringstream iss(str);
-    std::string word;
-    while(iss >> word) {
-        if(word == prefix || word == (prefix + ":")) {
-            iss >> word;
-            *val = std::stoi(word);
-            return 1;
-        } else {
-            std::cout << "prefix not recognised: " << word << std::endl;
-            return 0;
-        }
-    }
-    return 0;
-    
-}
-
-static bool getLineValue(std::string str ,float *val, const std::string &prefix) {
-    std::istringstream iss(str);
-    std::string word;
-    while(iss >> word || word == (prefix + ":")) {
-        if(word == prefix) {
-            iss >> word;
-            *val = std::stof(word);
-            return 1;
-        } else {
-            std::cout << "prefix not recognised: " << word << std::endl;
-            return 0;
-        }
-    }
-    return 0;
-}
-
-static bool getLineValue(std::string str, char * path, const std::string &prefix) {
-    std::istringstream iss(str);
-    std::string word;
-    while(iss >> word || word == (prefix + ":")) {
-        if(word == prefix) {
-            iss >> word;
-            strcpy(path, word.c_str());
-            return 1;
-        } else {
-            std::cout << "prefix not recognised: " << word << std::endl;
-            return 0;
-        }
-    }
-    return 0;
-}
-
-
 Scene::Scene() {
     this->path = "/Users/Bruno/Desktop/test1234.txt";//WIN: change to win path
 	numberOfObjects = 0;
@@ -224,6 +234,9 @@ Scene::~Scene() {
     //TODO: delete objectArray properly
 }
 
+/*
+ Reads the scene file and create the apropriate objects in the apropriate vectors(arrays)
+ */
 bool Scene::loadScene() {
 	std::ifstream ifs;
 	ifs.open(path, std::fstream::in);
@@ -501,6 +514,45 @@ bool Scene::loadScene() {
                 err = true;//if something went wrong set err to true
             } else {
                 err = true;
+            }
+            if(ifs.good()) {//get position
+                ifs.getline(line, LINE_SIZE);
+                currentLine = line;
+                if(!getLineValue(line, &ambientColor, "amb:"))//get the value
+                    err = true;//if something went wrong set err to true
+            } else {
+                err = true;
+            }
+            if(ifs.good()) {//get position
+                ifs.getline(line, LINE_SIZE);
+                currentLine = line;
+                if(!getLineValue(line, &diffuseColor, "dif:"))//get the value
+                    err = true;//if something went wrong set err to true
+            } else {
+                err = true;
+            }
+            if(ifs.good()) {//get position
+                ifs.getline(line, LINE_SIZE);
+                currentLine = line;
+                if(!getLineValue(line, &specularColor, "spe:"))//get the value
+                    err = true;//if something went wrong set err to true
+            } else {
+                err = true;
+            }
+            if(ifs.good()) {//get position
+                ifs.getline(line, LINE_SIZE);
+                currentLine = line;
+                if(!getLineValue(line, &shininess, "shi:"))//get the value
+                    err = true;//if something went wrong set err to true
+            } else {
+                err = true;
+            }
+            if(err) {
+                std::cout << "missing data in mesh (or something went wrong)" << std::endl;
+            } else {
+                //create triangle and push back
+                Mesh mesh(path, ambientColor, diffuseColor, specularColor, shininess);
+                meshArray.push_back(mesh);
             }
 
         }
