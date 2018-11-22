@@ -52,7 +52,6 @@ glm::vec3 RayTracer::trace(glm::vec3 &origin, glm::vec3 &pixelPos, int depth) {
     
     glm::vec3 intersection = origin + direction * iClosest;//position of the intersection
     glm::vec3 intersectionNormal = closestObject->getNormal(intersection);
-    intersectionNormal = glm::normalize(intersectionNormal);
     for(int j = 0; j < scene->lightArray.size(); j++) {
         Light * currentLight = &scene->lightArray[j];
         float isLit = 1;
@@ -65,20 +64,25 @@ glm::vec3 RayTracer::trace(glm::vec3 &origin, glm::vec3 &pixelPos, int depth) {
                 break;
             }
         }
+        
+        //the relection of the light with respects to the normal vector
         glm::vec3 reflectedLight = glm::reflect(lightDirection, intersectionNormal);
+        
+        
+        //glm::vec3 reflectedLight = ((2 * glm::dot(lightDirection, intersectionNormal)) * intersectionNormal) - lightDirection;
         reflectedLight = glm::normalize(reflectedLight);
         
-        glm::vec3 viewDirection = origin - intersection;
+        glm::vec3 viewDirection = origin - intersection;//from the ray intersection to the camera(origin)
         viewDirection = glm::normalize(viewDirection);
         
-        //TODO: specular
-        color += isLit * ((closestObject->ambientColor * currentLight->ambient) + //ambient
-                          (closestObject->diffuseColor * glm::dot(intersectionNormal, lightDirection) * currentLight->diffuse) +
-                          (closestObject->specularColor * currentLight->specular * pow(glm::dot(viewDirection, reflectedLight), closestObject->shininess)));
+        glm::vec3 ambient = (closestObject->ambientColor * currentLight->ambient);
+        glm::vec3 diffuse = isLit * (closestObject->diffuseColor * currentLight->diffuse * (float)fmax(glm::dot(intersectionNormal, lightDirection), 0));
         
+        
+        glm::vec3 specular = isLit * (closestObject->specularColor * currentLight->specular * pow(glm::dot(viewDirection, reflectedLight), closestObject->shininess));
+        
+        color +=  ambient + diffuse;// + specular;
     }
-    
-    
     return color;
 }
 
@@ -103,8 +107,14 @@ void RayTracer::raytrace() {
     
     for(int y = 0; y < height; y++) {
         for(int x = 0; x < width; x++, ++pixel) {
+            
+            /*
+             We start tracing from the bottom right pixel (+x, -y) because that is the way ppm files are written
+             Changing the starting point and direction just flips the image without actually chainging anything.
+             */
+            
             //position x of the current pixel
-            double posx = cam.position.x - (pixelWidth * ((width/2) - x)) + (pixelWidth/2);
+            double posx = cam.position.x + (pixelWidth * ((width/2) - x)) + (pixelWidth/2);
             //position y of the current pixel
             double posy = cam.position.y - (pixelheigh * ((height/2) - y)) + (pixelheigh/2);
             //position z of the current pixel
