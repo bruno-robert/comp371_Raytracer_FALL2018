@@ -28,6 +28,12 @@ int main(int argc, const char * argv[]) {
     
     scene.getObjectInfo();
     
+    int b = 1;
+    
+    std::cout << scene.sObjArray[b]->shininess;
+    std::cout << scene.sObjArray[b]->shininess;
+    std::cout << scene.sObjArray[b]->shininess << std::endl;
+    
     std::string outputFile = "/Users/Bruno/OneDrive - Concordia University - Canada/Documents/Concordia/Fall 2018/Comp 371/Xcode/Comp371 Final Project MacOS/Comp371 Final Project MacOS/bruno-first-render.ppm";
     
     RayTracer rt(&scene, 1920, outputFile);
