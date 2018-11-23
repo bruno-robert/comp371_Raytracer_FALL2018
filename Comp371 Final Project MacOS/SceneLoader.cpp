@@ -1,20 +1,29 @@
 #include "SceneLoader.h"
 
 //----helper functions----//
+
+static bool sameSide(const glm::vec3 &p1 ,const glm::vec3 &p2, const glm::vec3 &a, const glm::vec3 &b) {
+    glm::vec3 cp1 = glm::cross(b-a, p1-a);
+    glm::vec3 cp2 = glm::cross(b-a, p2-a);
+    if (glm::dot(cp1, cp2) >= 0 ) return true;
+    else return false;
+}
+
+
 //getLineValue checks the line prefix for validity and then sets the given variable with the line's value
 //multiple overloads for different variables types
 //TODO: get these to throw exeptions
-static bool getLineValue(std::string str, glm::vec3 *vec, const std::string &prefix) {
+static bool getLineValue(std::string str, glm::vec3 &vec, const std::string &prefix) {
     std::istringstream iss(str);
     std::string word;
     while(iss >> word) {
         if(word == prefix || word == (prefix + ":")) {//FIXME: this doesn't check if the word already has the ":" and ths could accept words of type "word::" (same for other getLineValue() methods
             iss >> word;
-            vec->x = std::stof(word);
+            vec.x = std::stof(word);
             iss >> word;
-            vec->y = std::stof(word);
+            vec.y = std::stof(word);
             iss >> word;
-            vec->z = std::stof(word);
+            vec.z = std::stof(word);
             return 1;
         } else {
             std::cout << "prefix not recognised: " << word << std::endl;
@@ -120,13 +129,19 @@ Plane::Plane(const glm::vec3 &normal, const glm::vec3 &position,
 }
 
 bool Plane::intersect(const glm::vec3 &origin, const glm::vec3 &direction, float &i1, float &i2) {
-    if(glm::dot(direction, normal) == 0) {
-        //the direction is parallel to the plane so just return false
-        return false;
+    
+    float denom = glm::dot(direction, normal);
+    // we use abs() because a hit is a hit independent of the direction of hte plane normal
+    if (std::abs(denom) > 0.0001f)
+    {
+        float t = glm::dot((position - origin), normal) / denom;
+        if (t >= 0) {
+            i1 = i2 = t;//there is only one intersection so just set to be equal
+            return true; // you might want to allow an epsilon here too
+        }
     }
+    return false;
     
-    
-    return false;//TODO:
 }
 
 glm::vec3 Plane::getNormal(const glm::vec3 &intersection) {
@@ -197,15 +212,27 @@ bool Triangle::intersect(const glm::vec3 &origin, const glm::vec3 &direction, fl
     glm::vec3 tNormal = glm::cross((v1 - v2), (v2 - v3));//vector that is normal to the triangle's plane
     tNormal = glm::normalize(tNormal);
     
-    if(glm::dot(direction, tNormal) == 0) {
-        //the direction is parallel to the plane so just return false
-        return false;
+    float denom = glm::dot(direction, tNormal);
+    // we use abs() because a hit is a hit independent of the direction of hte plane normal
+    if (std::abs(denom) > 0.0001f)
+    {
+        float t = glm::dot((v1 - origin), tNormal) / denom;
+        if (t >= 0) {
+            i1 = i2 = t;//there is only one intersection so just set to be equal
+            
+            glm::vec3 intersect = t * direction + origin;
+            
+            //We check if the point is in the triangle
+            if (sameSide(v3, intersect, v1, v2) && sameSide(v2, intersect, v3, v1) && sameSide(v1, intersect, v3, v2)) {
+                return true; // you might want to allow an epsilon here too
+            } else {
+                return false;
+            }
+        }
     }
-    //the direction is not parallel to the plane
-    //check if the intersection happens inside or outside of the triangle
+    return false;
     
     
-    return false;//TODO:
 }
 
 glm::vec3 Triangle::getNormal(const glm::vec3 &intersection) {
@@ -213,8 +240,8 @@ glm::vec3 Triangle::getNormal(const glm::vec3 &intersection) {
     return a;//TODO:
 }
 
-Light::Light(const glm::vec3 &posisiton, const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular) {
-    this->position = position;
+Light::Light(const glm::vec3 &pos, const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular) {
+    this->position = pos;
     this->ambient = ambient;
     this->diffuse = diffuse;
     this->specular = specular;
@@ -276,7 +303,7 @@ bool Scene::loadScene() {
             if(ifs.good()) {//get position
                 ifs.getline(line, LINE_SIZE);
                 currentLine = line;
-                if(!getLineValue(line, &pos, "pos:"))//get the value
+                if(!getLineValue(line, pos, "pos:"))//get the value
                     err = true;//if something went wrong set err to true
             } else {
                 err = true;
@@ -311,10 +338,6 @@ bool Scene::loadScene() {
                 Camera camera(pos, fov, fl, ar);
                 cameraArray.push_back(camera);
             }
-            //MARK: verbose
-            if (VERBOSE) {
-                std::cout << "Camera " << cameraArray.size() << " set!" << std::endl;//FIXME: this doesn't work if it fails, only when it doesn't
-            }
         }
         else if(currentLine == "triangle" || currentLine == "triangle\n" || currentLine == "triangle\r\n" || currentLine == "triangle\r") {
             glm::vec3 v1;
@@ -329,7 +352,7 @@ bool Scene::loadScene() {
             if(ifs.good()) {//get position
                 ifs.getline(line, LINE_SIZE);
                 currentLine = line;
-                if(!getLineValue(line, &v1, "v1:"))//get the value
+                if(!getLineValue(line, v1, "v1:"))//get the value
                     err = true;//if something went wrong set err to true
             } else {
                 err = true;
@@ -337,7 +360,7 @@ bool Scene::loadScene() {
             if(ifs.good()) {//get position
                 ifs.getline(line, LINE_SIZE);
                 currentLine = line;
-                if(!getLineValue(line, &v2, "v2"))//get the value
+                if(!getLineValue(line, v2, "v2"))//get the value
                     err = true;//if something went wrong set err to true
             } else {
                 err = true;
@@ -345,7 +368,7 @@ bool Scene::loadScene() {
             if(ifs.good()) {//get position
                 ifs.getline(line, LINE_SIZE);
                 currentLine = line;
-                if(!getLineValue(line, &v3, "v3:"))//get the value
+                if(!getLineValue(line, v3, "v3:"))//get the value
                     err = true;//if something went wrong set err to true
             } else {
                 err = true;
@@ -353,7 +376,7 @@ bool Scene::loadScene() {
             if(ifs.good()) {//get position
                 ifs.getline(line, LINE_SIZE);
                 currentLine = line;
-                if(!getLineValue(line, &ambientColor, "amb:"))//get the value
+                if(!getLineValue(line, ambientColor, "amb:"))//get the value
                     err = true;//if something went wrong set err to true
             } else {
                 err = true;
@@ -361,7 +384,7 @@ bool Scene::loadScene() {
             if(ifs.good()) {//get position
                 ifs.getline(line, LINE_SIZE);
                 currentLine = line;
-                if(!getLineValue(line, &diffuseColor, "dif:"))//get the value
+                if(!getLineValue(line, diffuseColor, "dif:"))//get the value
                     err = true;//if something went wrong set err to true
             } else {
                 err = true;
@@ -369,7 +392,7 @@ bool Scene::loadScene() {
             if(ifs.good()) {//get position
                 ifs.getline(line, LINE_SIZE);
                 currentLine = line;
-                if(!getLineValue(line, &specularColor, "spe:"))//get the value
+                if(!getLineValue(line, specularColor, "spe:"))//get the value
                     err = true;//if something went wrong set err to true
             } else {
                 err = true;
@@ -387,8 +410,9 @@ bool Scene::loadScene() {
                 std::cout << "missing data in triangle (or something went wrong)" << std::endl;
             } else {
                 //create triangle and push back
-                Triangle triangle(v1, v2, v3, ambientColor, diffuseColor, specularColor, shininess);
-                triangleArray.push_back(triangle);
+                Triangle *triangle = new Triangle(v1, v2, v3, ambientColor, diffuseColor, specularColor, shininess);
+                triangleArray.push_back(*triangle);
+                sObjArray.push_back(triangle);
             }
         }
         else if(currentLine == "sphere" || currentLine == "sphere\n" || currentLine == "sphere\r\n" || currentLine == "sphere\r") {
@@ -402,7 +426,7 @@ bool Scene::loadScene() {
             if(ifs.good()) {//get position
                 ifs.getline(line, LINE_SIZE);
                 currentLine = line;
-                if(!getLineValue(line, &position, "pos:"))//get the value
+                if(!getLineValue(line, position, "pos:"))//get the value
                 err = true;//if something went wrong set err to true
             } else {
                 err = true;
@@ -418,7 +442,7 @@ bool Scene::loadScene() {
             if(ifs.good()) {//get position
                 ifs.getline(line, LINE_SIZE);
                 currentLine = line;
-                if(!getLineValue(line, &ambientColor, "amb:"))//get the value
+                if(!getLineValue(line, ambientColor, "amb:"))//get the value
                 err = true;//if something went wrong set err to true
             } else {
                 err = true;
@@ -426,7 +450,7 @@ bool Scene::loadScene() {
             if(ifs.good()) {//get position
                 ifs.getline(line, LINE_SIZE);
                 currentLine = line;
-                if(!getLineValue(line, &diffuseColor, "dif:"))//get the value
+                if(!getLineValue(line, diffuseColor, "dif:"))//get the value
                 err = true;//if something went wrong set err to true
             } else {
                 err = true;
@@ -434,7 +458,7 @@ bool Scene::loadScene() {
             if(ifs.good()) {//get position
                 ifs.getline(line, LINE_SIZE);
                 currentLine = line;
-                if(!getLineValue(line, &specularColor, "spe:"))//get the value
+                if(!getLineValue(line, specularColor, "spe:"))//get the value
                 err = true;//if something went wrong set err to true
             } else {
                 err = true;
@@ -451,8 +475,9 @@ bool Scene::loadScene() {
                 std::cout << "missing data in triangle (or something went wrong)" << std::endl;
             } else {
                 //create triangle and push back
-                Sphere sphere(position, radius, ambientColor, diffuseColor, specularColor, shininess);
-                sphereArray.push_back(sphere);
+                Sphere *sphere = new Sphere(position, radius, ambientColor, diffuseColor, specularColor, shininess);
+                sphereArray.push_back(*sphere);
+                sObjArray.push_back(sphere);
             }
             
         } else if(currentLine == "light" || currentLine == "light\n" || currentLine == "light\r\n" || currentLine == "light\r") {
@@ -464,7 +489,7 @@ bool Scene::loadScene() {
             if(ifs.good()) {//get position
                 ifs.getline(line, LINE_SIZE);
                 currentLine = line;
-                if(!getLineValue(line, &position, "pos:"))//get the value
+                if(!getLineValue(line, position, "pos:"))//get the value
                 err = true;//if something went wrong set err to true
             } else {
                 err = true;
@@ -472,7 +497,7 @@ bool Scene::loadScene() {
             if(ifs.good()) {//get position
                 ifs.getline(line, LINE_SIZE);
                 currentLine = line;
-                if(!getLineValue(line, &ambient, "amb:"))//get the value
+                if(!getLineValue(line, ambient, "amb:"))//get the value
                 err = true;//if something went wrong set err to true
             } else {
                 err = true;
@@ -480,7 +505,7 @@ bool Scene::loadScene() {
             if(ifs.good()) {//get position
                 ifs.getline(line, LINE_SIZE);
                 currentLine = line;
-                if(!getLineValue(line, &diffuse, "dif:"))//get the value
+                if(!getLineValue(line, diffuse, "dif:"))//get the value
                 err = true;//if something went wrong set err to true
             } else {
                 err = true;
@@ -488,7 +513,7 @@ bool Scene::loadScene() {
             if(ifs.good()) {//get position
                 ifs.getline(line, LINE_SIZE);
                 currentLine = line;
-                if(!getLineValue(line, &specular, "spe:"))//get the value
+                if(!getLineValue(line, specular, "spe:"))//get the value
                 err = true;//if something went wrong set err to true
             } else {
                 err = true;
@@ -501,7 +526,7 @@ bool Scene::loadScene() {
                 lightArray.push_back(light);
             }
         } else if(currentLine == "mesh" || currentLine == "mesh\n" || currentLine == "mesh\r\n" || currentLine == "mesh\r") {
-            char * path;
+            char * path = nullptr;
             glm::vec3 ambientColor;
             glm::vec3 diffuseColor;
             glm::vec3 specularColor;
@@ -518,7 +543,7 @@ bool Scene::loadScene() {
             if(ifs.good()) {//get position
                 ifs.getline(line, LINE_SIZE);
                 currentLine = line;
-                if(!getLineValue(line, &ambientColor, "amb:"))//get the value
+                if(!getLineValue(line, ambientColor, "amb:"))//get the value
                     err = true;//if something went wrong set err to true
             } else {
                 err = true;
@@ -526,7 +551,7 @@ bool Scene::loadScene() {
             if(ifs.good()) {//get position
                 ifs.getline(line, LINE_SIZE);
                 currentLine = line;
-                if(!getLineValue(line, &diffuseColor, "dif:"))//get the value
+                if(!getLineValue(line, diffuseColor, "dif:"))//get the value
                     err = true;//if something went wrong set err to true
             } else {
                 err = true;
@@ -534,7 +559,7 @@ bool Scene::loadScene() {
             if(ifs.good()) {//get position
                 ifs.getline(line, LINE_SIZE);
                 currentLine = line;
-                if(!getLineValue(line, &specularColor, "spe:"))//get the value
+                if(!getLineValue(line, specularColor, "spe:"))//get the value
                     err = true;//if something went wrong set err to true
             } else {
                 err = true;
@@ -551,16 +576,80 @@ bool Scene::loadScene() {
                 std::cout << "missing data in mesh (or something went wrong)" << std::endl;
             } else {
                 //create triangle and push back
-                Mesh mesh(path, ambientColor, diffuseColor, specularColor, shininess);
-                meshArray.push_back(mesh);
+                Mesh *mesh = new Mesh(path, ambientColor, diffuseColor, specularColor, shininess);
+                meshArray.push_back(*mesh);
+                sObjArray.push_back(mesh);
             }
 
+        } else if(currentLine == "plane" || currentLine == "plane\n" || currentLine == "plane\r\n" || currentLine == "plane\r") {
+            glm::vec3 normal;
+            glm::vec3 position;
+            glm::vec3 ambientColor;
+            glm::vec3 diffuseColor;
+            glm::vec3 specularColor;
+            float shininess = 0.0;
+            bool err = false;
+            
+            if(ifs.good()) {//get position
+                ifs.getline(line, LINE_SIZE);
+                currentLine = line;
+                if(!getLineValue(line, normal, "nor:"))//get the value
+                    err = true;//if something went wrong set err to true
+            } else {
+                err = true;
+            }
+            if(ifs.good()) {//get position
+                ifs.getline(line, LINE_SIZE);
+                currentLine = line;
+                if(!getLineValue(line, position, "pos:"))//get the value
+                    err = true;//if something went wrong set err to true
+            } else {
+                err = true;
+            }
+            if(ifs.good()) {//get position
+                ifs.getline(line, LINE_SIZE);
+                currentLine = line;
+                if(!getLineValue(line, ambientColor, "amb:"))//get the value
+                    err = true;//if something went wrong set err to true
+            } else {
+                err = true;
+            }
+            if(ifs.good()) {//get position
+                ifs.getline(line, LINE_SIZE);
+                currentLine = line;
+                if(!getLineValue(line, diffuseColor, "dif:"))//get the value
+                    err = true;//if something went wrong set err to true
+            } else {
+                err = true;
+            }
+            if(ifs.good()) {//get position
+                ifs.getline(line, LINE_SIZE);
+                currentLine = line;
+                if(!getLineValue(line, specularColor, "spe:"))//get the value
+                    err = true;//if something went wrong set err to true
+            } else {
+                err = true;
+            }
+            if(ifs.good()) {//get position
+                ifs.getline(line, LINE_SIZE);
+                currentLine = line;
+                if(!getLineValue(line, &shininess, "shi:"))//get the value
+                    err = true;//if something went wrong set err to true
+            } else {
+                err = true;
+            }
+            if(err) {
+                std::cout << "missing data in mesh (or something went wrong)" << std::endl;
+            } else {
+                //create triangle and push back
+                Plane *plane = new Plane(normal, position, ambientColor, diffuseColor, specularColor, shininess);
+                planeArray.push_back(*plane);
+                sObjArray.push_back(plane);//TODO: check the pointer problem, this might not work since the plane is saved to the stack and not the heap (same for all other objects)
+            }
+            
         }
 	}//END while
-    
-    
 	ifs.close();//close the filestream
-
 	return true;
 }
 
@@ -575,17 +664,17 @@ int Scene::getNumberOfObjects() {
 void Scene::getObjectInfo() {
     std::string str;
     
-    std::cout << "There are: " << cameraArray.size() << " Camera Objects\n" << std::endl;
+    std::cout << "There are: " << cameraArray.size() << " Camera Objects" << std::endl;
     
-    std::cout << "There are: " << planeArray.size() << " Plane Objects\n" << std::endl;
+    std::cout << "There are: " << planeArray.size() << " Plane Objects" << std::endl;
     
-    std::cout << "There are: " << sphereArray.size() << " Sphere Objects\n" << std::endl;
+    std::cout << "There are: " << sphereArray.size() << " Sphere Objects" << std::endl;
     
-    std::cout << "There are: " << meshArray.size() << " Mesh Objects\n" << std::endl;
+    std::cout << "There are: " << meshArray.size() << " Mesh Objects" << std::endl;
     
-    std::cout << "There are: " << lightArray.size() << " Light Objects\n" << std::endl;
+    std::cout << "There are: " << lightArray.size() << " Light Objects" << std::endl;
     
-    std::cout << "There are: " << triangleArray.size() << " Triangle Objects\n" << std::endl;
+    std::cout << "There are: " << triangleArray.size() << " Triangle Objects" << std::endl;
     
     
 }

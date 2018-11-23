@@ -99,7 +99,7 @@ public:
     glm::vec3 ambient;
     glm::vec3 diffuse;
     glm::vec3 specular;
-    Light(const glm::vec3 &posisiton, const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular);
+    Light(const glm::vec3 &pos, const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular);
     
 };
 

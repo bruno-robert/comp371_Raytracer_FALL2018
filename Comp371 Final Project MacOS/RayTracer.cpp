@@ -25,8 +25,7 @@ RayTracer::~RayTracer() {
  If the ray doesn't intersect, returns the background color
 */
 glm::vec3 RayTracer::trace(glm::vec3 &origin, glm::vec3 &pixelPos, int depth) {
-    glm::vec3 color = glm::vec3(0.1f);//backgroud color
-    bool intersect = false;//TODO: remove this variable as it's maybe not necessary
+    glm::vec3 color = glm::vec3(0.2f);//backgroud color
     SceneObject * closestObject = nullptr;//the closest object
     float iClosest = INFINITY; //the closes distance to an object
     
@@ -36,21 +35,21 @@ glm::vec3 RayTracer::trace(glm::vec3 &origin, glm::vec3 &pixelPos, int depth) {
     float i1 = INFINITY, i2 = INFINITY;
     
     //TODO: loop through all the objects and find the closest one
-    for(int i = 0; i < scene->sphereArray.size(); i++) {
-        if (scene->sphereArray[i].intersect(origin, direction, i1, i2)) {
+    for(int i = 0; i < scene->sObjArray.size(); i++) {
+        if (scene->sObjArray[i]->intersect(origin, direction, i1, i2)) {
             if (i1 < 0) i1 = i2; //if the first intersection is behind us (we are in the sphere)
             if (i1 < iClosest) {//if this intersection is closer than the previous one
                 iClosest = i1;
-                closestObject = &scene->sphereArray[i];
-                intersect = true;
+                closestObject = scene->sObjArray[i];
             }
         }
     }
-    //TODO: Create a shadow ray from closest object's intersection x number of lights
+    
+
     // if there are no intersections return the background color
     if (!closestObject) return color;
     
-    glm::vec3 intersection = origin + direction * iClosest;//position of the intersection
+    glm::vec3 intersection = origin + (direction * iClosest);//position of the intersection
     glm::vec3 intersectionNormal = closestObject->getNormal(intersection);
     for(int j = 0; j < scene->lightArray.size(); j++) {
         Light * currentLight = &scene->lightArray[j];
@@ -58,18 +57,17 @@ glm::vec3 RayTracer::trace(glm::vec3 &origin, glm::vec3 &pixelPos, int depth) {
         glm::vec3 lightDirection = currentLight->position - intersection;//from intersection to light
         lightDirection = glm::normalize(lightDirection);
         
-        for(int i = 0; i < scene->sphereArray.size(); i++) {
-            if (scene->sphereArray[i].intersect(intersection, lightDirection, i1, i2)) {
+        //"The path of the righteous man is beset on all sides by the inequities of the selfish and the tyranny of evil men. Blessed is he who, in the name of charity and good will, shepherds the weak through the valley of the darkness."
+        for(int i = 0; i < scene->sObjArray.size(); i++) {
+            if (scene->sObjArray[i]->intersect(intersection, lightDirection, i1, i2)) {
                 isLit = 0;
                 break;
             }
         }
         
+        
         //the relection of the light with respects to the normal vector
         glm::vec3 reflectedLight = glm::reflect(lightDirection, intersectionNormal);
-        
-        
-        //glm::vec3 reflectedLight = ((2 * glm::dot(lightDirection, intersectionNormal)) * intersectionNormal) - lightDirection;
         reflectedLight = glm::normalize(reflectedLight);
         
         glm::vec3 viewDirection = origin - intersection;//from the ray intersection to the camera(origin)
@@ -81,26 +79,30 @@ glm::vec3 RayTracer::trace(glm::vec3 &origin, glm::vec3 &pixelPos, int depth) {
         
         glm::vec3 specular = isLit * (closestObject->specularColor * currentLight->specular * pow(glm::dot(viewDirection, reflectedLight), closestObject->shininess));
         
-        color +=  ambient + diffuse;// + specular;
+        
+        
+        color += ambient + diffuse + specular;
     }
-    return color;
+    return color;//And God said, "Let there be light," and there was light.
 }
 
 //Raytraces the image (computes using raytracing the values of each pixel)
+//"At this time, humans first created machines in their own image, in effect ensuring their own demise."
+//"And for a time it was good"
 void RayTracer::raytrace() {
     Camera cam = scene->cameraArray[0];//the main camera of the scene
-    double ar = cam.aspectRatio;//(double)height/(double)width; //aspect ratio
-    double ipd = cam.focalLength;//image plane distance
-    double fov = cam.fov/2;
+    float ar = cam.aspectRatio;//(double)height/(double)width; //aspect ratio
+    float ipd = cam.focalLength;//image plane distance
+    float fov = cam.fov/2;
     
     //width of the screen in units (not pixels)
-    double screenWidth = (2 * ipd * sin(fov / 2)) / cos(fov / 2);
-    double screenHeight = screenWidth / ar;
+    float screenWidth = (2 * ipd * sin(fov / 2)) / cos(fov / 2);
+    float screenHeight = screenWidth / ar;
     
     height = width / ar;
     
-    double pixelWidth = screenWidth / width; //width of a pixel
-    double pixelheigh = screenHeight / height; //height of a pixel (pixels are not necesseraly square)
+    float pixelWidth = screenWidth / width; //width of a pixel
+    float pixelheigh = screenHeight / height; //height of a pixel (pixels are not necesseraly square)
     
     
     glm::vec3 *image = new glm::vec3[width * height], *pixel = image;//stores all the pixel values
@@ -114,11 +116,11 @@ void RayTracer::raytrace() {
              */
             
             //position x of the current pixel
-            double posx = cam.position.x + (pixelWidth * ((width/2) - x)) + (pixelWidth/2);
+            float posx = cam.position.x + (pixelWidth * ((width/2) - x)) + (pixelWidth/2);
             //position y of the current pixel
-            double posy = cam.position.y - (pixelheigh * ((height/2) - y)) + (pixelheigh/2);
+            float posy = cam.position.y - (pixelheigh * ((height/2) - y)) + (pixelheigh/2);
             //position z of the current pixel
-            double posz = -ipd;
+            float posz = -ipd;
             
             glm::vec3 pixelPos(posx, posy, posz);//position of the pixel
             
