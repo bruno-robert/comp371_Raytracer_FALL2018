@@ -129,15 +129,15 @@ Plane::Plane(const glm::vec3 &normal, const glm::vec3 &position,
 }
 
 bool Plane::intersect(const glm::vec3 &origin, const glm::vec3 &direction, float &i1, float &i2) {
-    
+    float bias = 0.0001f;//bias is here so that that plane doesn't intersect with itself
     float denom = glm::dot(direction, normal);
     // we use abs() because a hit is a hit independent of the direction of hte plane normal
     if (std::abs(denom) > 0.0001f)
     {
         float t = glm::dot((position - origin), normal) / denom;
-        if (t >= 0) {
+        if (t >= 0 + bias) {
             i1 = i2 = t;//there is only one intersection so just set to be equal
-            return true; // you might want to allow an epsilon here too
+            return true; 
         }
     }
     return false;
@@ -191,15 +191,62 @@ Mesh::Mesh(char * path, const glm::vec3 &ambientColor,
            float shininess) : SceneObject(ambientColor, diffuseColor, specularColor, shininess)
 {
     this->path = path;
+    isMeshLoaded = false;
 }
 
 bool Mesh::intersect(const glm::vec3 &origin, const glm::vec3 &direction, float &i1, float &i2) {
-    return false;//TODO:
+    //TODO:
+    if(!isMeshLoaded) {
+        //load the associated file (do this once per mesh)
+        isMeshLoaded = gatherMesh();
+    }
+    if(isMeshLoaded){
+        
+        //find the object that is the first to be intersected if any
+        //find the object that is last to be intersected if any
+        //set i1 and i2 if applicable
+        //return the apropritate value
+    }
+    
+    
+    
+    
+    
+    if(VERBOSE) {
+        std::cout << "mesh failed to load" << std::endl;
+    }
+    return false;
 }
 
 glm::vec3 Mesh::getNormal(const glm::vec3 &intersection) {
     glm::vec3 a = glm::vec3(0.0f);
     return a;//TODO:
+}
+
+bool Mesh::gatherMesh() {
+    std::string sceneFolderPath = "/Users/Bruno/OneDrive - Concordia University - Canada/Documents/Concordia/Fall 2018/Comp 371/Xcode/Comp371 Final Project MacOS/Comp371 Final Project MacOS/Scene_Files/";
+    std::ifstream ifs;//input file stream
+    ifs.open(sceneFolderPath + path, std::fstream::in);
+    if (!ifs.is_open()) {
+        std::cout << "Error - cannot open the file." << std::endl;
+        return 0;
+    }
+    
+    const int LINE_SIZE = 256;//maximum size of a line
+    char line[LINE_SIZE];//stores teh current line
+    
+    //Read first line and create the Proper number of Objects
+    if (ifs.good()) {
+        ifs.getline(line, LINE_SIZE);
+        try {
+            //numberOfObjects = std::stoi(line);
+        }
+        catch (std::exception const &e) {
+            std::cout << "the number of objects wasn't translated to an integer" << std::endl;
+        }
+    }
+    
+    return true;
 }
 
 Triangle::Triangle(const glm::vec3 &v1, const glm::vec3 &v2, const glm::vec3 &v3, const glm::vec3 &ambientColor, const glm::vec3 &diffuseColor, const glm::vec3 &specularColor, float shininess) : SceneObject(ambientColor, diffuseColor, specularColor, shininess) {
@@ -236,8 +283,9 @@ bool Triangle::intersect(const glm::vec3 &origin, const glm::vec3 &direction, fl
 }
 
 glm::vec3 Triangle::getNormal(const glm::vec3 &intersection) {
-    glm::vec3 a = glm::vec3(0.0f);
-    return a;//TODO:
+    glm::vec3 tNormal = glm::cross((v1 - v2), (v2 - v3));//vector that is normal to the triangle's plane
+    tNormal = glm::normalize(tNormal);
+    return tNormal;
 }
 
 Light::Light(const glm::vec3 &pos, const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular) {
@@ -644,7 +692,7 @@ bool Scene::loadScene() {
                 //create triangle and push back
                 Plane *plane = new Plane(normal, position, ambientColor, diffuseColor, specularColor, shininess);
                 planeArray.push_back(*plane);
-                sObjArray.push_back(plane);//TODO: check the pointer problem, this might not work since the plane is saved to the stack and not the heap (same for all other objects)
+                sObjArray.push_back(plane);
             }
             
         }

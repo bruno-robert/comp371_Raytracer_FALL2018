@@ -78,6 +78,8 @@ public:
     bool intersect(const glm::vec3 &origin, const glm::vec3 &direction, float &i1, float &i2);
     glm::vec3 getNormal(const glm::vec3 &intersection);
 private:
+    bool gatherMesh();//gets the mesh data from the file declared in path
+    bool isMeshLoaded;
     char * path;
 };
 

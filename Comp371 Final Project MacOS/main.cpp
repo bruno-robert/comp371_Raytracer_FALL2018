@@ -19,7 +19,7 @@ int main(int argc, const char * argv[]) {
 //    outfile.open("/Users/Bruno/Desktop/test1234.txt", std::fstream::out);//WIN: this path needs to be changed to local windows path
 //    outfile << "this is a test" << std::endl;
 //    outfile.close();
-    
+    //char const * sceneFolderPath = "/Users/Bruno/OneDrive - Concordia University - Canada/Documents/Concordia/Fall 2018/Comp 371/Xcode/Comp371 Final Project MacOS/Comp371 Final Project MacOS/Scene_Files/";
     char const * filePath = "/Users/Bruno/OneDrive - Concordia University - Canada/Documents/Concordia/Fall 2018/Comp 371/Xcode/Comp371 Final Project MacOS/Comp371 Final Project MacOS/Scene_Files/scene2.txt";
     
     
@@ -27,12 +27,6 @@ int main(int argc, const char * argv[]) {
     scene.loadScene();
     
     scene.getObjectInfo();
-    
-    int b = 1;
-    
-    std::cout << scene.sObjArray[b]->shininess;
-    std::cout << scene.sObjArray[b]->shininess;
-    std::cout << scene.sObjArray[b]->shininess << std::endl;
     
     std::string outputFile = "/Users/Bruno/OneDrive - Concordia University - Canada/Documents/Concordia/Fall 2018/Comp 371/Xcode/Comp371 Final Project MacOS/Comp371 Final Project MacOS/bruno-first-render.ppm";
     

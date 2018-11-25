@@ -57,7 +57,12 @@ glm::vec3 RayTracer::trace(glm::vec3 &origin, glm::vec3 &pixelPos, int depth) {
         glm::vec3 lightDirection = currentLight->position - intersection;//from intersection to light
         lightDirection = glm::normalize(lightDirection);
         
-        //"The path of the righteous man is beset on all sides by the inequities of the selfish and the tyranny of evil men. Blessed is he who, in the name of charity and good will, shepherds the weak through the valley of the darkness."
+        /*
+         "The path of the righteous man is beset on all sides by the inequities of the selfish and the
+         tyranny of evil men. Blessed is he who, in the name of charity and good will, shepherds the weak
+         through the valley of darkness, for he is truly his brother's keeper and the finder of lost
+         children."
+         */
         for(int i = 0; i < scene->sObjArray.size(); i++) {
             if (scene->sObjArray[i]->intersect(intersection, lightDirection, i1, i2)) {
                 isLit = 0;
@@ -65,22 +70,32 @@ glm::vec3 RayTracer::trace(glm::vec3 &origin, glm::vec3 &pixelPos, int depth) {
             }
         }
         
-        
-        //the relection of the light with respects to the normal vector
-        glm::vec3 reflectedLight = glm::reflect(lightDirection, intersectionNormal);
-        reflectedLight = glm::normalize(reflectedLight);
-        
         glm::vec3 viewDirection = origin - intersection;//from the ray intersection to the camera(origin)
         viewDirection = glm::normalize(viewDirection);
         
+        //checking the direction of the normal
+        //normally if the file is good this should change anything
+        if(glm::dot(viewDirection, intersectionNormal) <= 0) {
+            //"And you will know my name is the Lord when I lay my vengeance upon thee."
+            intersectionNormal = -intersectionNormal;
+        }
+        
+        //the relection of the light with respects to the normal vector
+        glm::vec3 reflectedLight = glm::reflect(-lightDirection, intersectionNormal);
+        reflectedLight = glm::normalize(reflectedLight);
+        
+        //checking the direction of the reflected light
+        if(glm::dot(reflectedLight, intersectionNormal) <= 0) {
+            //"And you will know my name is the Lord when I lay my vengeance upon thee."
+            reflectedLight = -reflectedLight;
+        }
+        
         glm::vec3 ambient = (closestObject->ambientColor * currentLight->ambient);
+        
         glm::vec3 diffuse = isLit * (closestObject->diffuseColor * currentLight->diffuse * (float)fmax(glm::dot(intersectionNormal, lightDirection), 0));
         
-        
-        glm::vec3 specular = isLit * (closestObject->specularColor * currentLight->specular * pow(glm::dot(viewDirection, reflectedLight), closestObject->shininess));
-        
-        
-        
+        glm::vec3 specular = isLit * (closestObject->specularColor * currentLight->specular * pow((float)fmax((float)glm::dot(viewDirection, reflectedLight), 0.0f), closestObject->shininess));
+
         color += ambient + diffuse + specular;
     }
     return color;//And God said, "Let there be light," and there was light.
