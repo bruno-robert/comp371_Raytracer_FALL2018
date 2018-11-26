@@ -7,11 +7,14 @@
 #include <iostream>//basic file operations
 #include <fstream>//basic file operations
 #include "glm.hpp"//glm
+#include "objLoader.hpp"
 #include <string>
 #include <vector>
 #include <sstream>
 
 const bool VERBOSE = true;//MARK: debug verbose on/off
+
+class Scene;
 
 //----Helper objects----//
 class SceneObject {
@@ -71,18 +74,7 @@ private:
     float radius;
 };
 
-//Mesh object
-class Mesh : public SceneObject {
-public:
-    Mesh(char * path, const glm::vec3 &ambientColor, const glm::vec3 &diffuseColor, const glm::vec3 &specularColor, float shininess);
-    bool intersect(const glm::vec3 &origin, const glm::vec3 &direction, float &i1, float &i2);
-    glm::vec3 getNormal(const glm::vec3 &intersection);
-private:
-    bool gatherMesh();//gets the mesh data from the file declared in path
-    bool isMeshLoaded;
-    char * path;
-};
-
+//Triangle Object
 class Triangle : public SceneObject {
 public:
     Triangle(const glm::vec3 &v1, const glm::vec3 &v2, const glm::vec3 &v3, const glm::vec3 &ambientColor, const glm::vec3 &diffuseColor, const glm::vec3 &specularColor, float shininess);
@@ -92,6 +84,23 @@ private:
     glm::vec3 v1;
     glm::vec3 v2;
     glm::vec3 v3;
+};
+
+//Mesh object
+class Mesh {
+public:
+    Mesh(std::string homePath, std::string path, const glm::vec3 &ambientColor, const glm::vec3 &diffuseColor, const glm::vec3 &specularColor, float shininess);
+    bool gatherMesh(Scene *s);//gets the mesh data from the file declared in path
+    
+    glm::vec3 ambientColor;
+    glm::vec3 diffuseColor;
+    glm::vec3 specularColor;
+    float shininess;
+private:
+    //std::vector<Triangle*> mTriangleArray;//The mesh is basiaclly a collection of triangles
+    bool isMeshLoaded;
+    std::string path;
+    std::string homePath;
 };
 
 //Light Object
@@ -111,13 +120,13 @@ public:
 class Scene 
 {
 public:
-	Scene();
-	Scene(const char * path);
+	Scene(std::string homePath, std::string path);
     ~Scene();
 	bool loadScene();
 	void setNumberOfObjects(int number);
 	int getNumberOfObjects();
     void getObjectInfo();
+    void addTriangle(Triangle *t);
     //std::vector<SceneObject*> objectArray;//MARK: removable old
     std::vector<Camera> cameraArray;
     std::vector<Plane> planeArray;
@@ -130,6 +139,7 @@ public:
     //thus simplifiying the process of iterating through all of them
     std::vector<SceneObject*> sObjArray;
 private:
-	const char * path;
+	std::string path;
+    std::string homePath;
 	int numberOfObjects;
 };

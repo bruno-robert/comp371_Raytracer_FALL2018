@@ -8,8 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		152D5A6021923ECB0082CC96 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 152D5A5F21923ECB0082CC96 /* main.cpp */; };
-		152D5A6B219240BE0082CC96 /* SceneLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 152D5A68219240BE0082CC96 /* SceneLoader.cpp */; };
-		155E0530219FD6CD0029CA33 /* RayTracer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 155E052E219FD6CD0029CA33 /* RayTracer.cpp */; };
+		158E0D4621AB53B600849F8F /* RayTracer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 155E052E219FD6CD0029CA33 /* RayTracer.cpp */; };
+		158E0D4821AB54C300849F8F /* SceneLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 152D5A68219240BE0082CC96 /* SceneLoader.cpp */; };
+		158E0D4921AB551100849F8F /* objLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 158E0D4321AB43E600849F8F /* objLoader.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -1943,7 +1944,31 @@
 		155E0C3321A1C5A40029CA33 /* glext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = glext.h; sourceTree = "<group>"; };
 		155E0C3421A1C5A40029CA33 /* glplatform.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = glplatform.h; sourceTree = "<group>"; };
 		155E0C3521A1C5A40029CA33 /* gl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gl.h; sourceTree = "<group>"; };
-		15F6E9F121A7AE5100E9137F /* bruno-first-render.ppm */ = {isa = PBXFileReference; lastKnownFileType = file; path = "bruno-first-render.ppm"; sourceTree = "<group>"; };
+		158E0D4321AB43E600849F8F /* objLoader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = objLoader.cpp; sourceTree = "<group>"; };
+		158E0D4421AB43E600849F8F /* objLoader.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = objLoader.hpp; sourceTree = "<group>"; };
+		158E0D4B21ABAA3D00849F8F /* sceneMap.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = sceneMap.txt; sourceTree = "<group>"; };
+		158E0D4C21ABAA3D00849F8F /* scene4.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = scene4.txt; sourceTree = "<group>"; };
+		158E0D4D21ABAA3D00849F8F /* scene5.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = scene5.txt; sourceTree = "<group>"; };
+		158E0D4E21ABAA3D00849F8F /* scene7.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = scene7.txt; sourceTree = "<group>"; };
+		158E0D4F21ABAA3D00849F8F /* scene6.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = scene6.txt; sourceTree = "<group>"; };
+		158E0D5021ABAA3D00849F8F /* map.obj */ = {isa = PBXFileReference; lastKnownFileType = text; path = map.obj; sourceTree = "<group>"; };
+		158E0D5121ABAA3D00849F8F /* scene2.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = scene2.txt; sourceTree = "<group>"; };
+		158E0D5221ABAA3D00849F8F /* scene3.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = scene3.txt; sourceTree = "<group>"; };
+		158E0D5321ABAA3D00849F8F /* scene1.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = scene1.txt; sourceTree = "<group>"; };
+		158E0D5421ABAA3D00849F8F /* sceneCube.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = sceneCube.bmp; sourceTree = "<group>"; };
+		158E0D5521ABAA3D00849F8F /* scenefish.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = scenefish.txt; sourceTree = "<group>"; };
+		158E0D5621ABAA3D00849F8F /* cube.obj */ = {isa = PBXFileReference; lastKnownFileType = text; path = cube.obj; sourceTree = "<group>"; };
+		158E0D5721ABAA3D00849F8F /* sceneCube.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = sceneCube.txt; sourceTree = "<group>"; };
+		158E0D5821ABAA3D00849F8F /* fish.obj */ = {isa = PBXFileReference; lastKnownFileType = text; path = fish.obj; sourceTree = "<group>"; };
+		158E0D5921ABAA3D00849F8F /* scenefish.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = scenefish.bmp; sourceTree = "<group>"; };
+		158E0D5A21ABAA3D00849F8F /* scene2.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = scene2.bmp; sourceTree = "<group>"; };
+		158E0D5B21ABAA3D00849F8F /* scene3.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = scene3.bmp; sourceTree = "<group>"; };
+		158E0D5C21ABAA3D00849F8F /* sceneMap.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = sceneMap.bmp; sourceTree = "<group>"; };
+		158E0D5D21ABAA3D00849F8F /* scene4.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = scene4.bmp; sourceTree = "<group>"; };
+		158E0D5E21ABAA3D00849F8F /* scene5.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = scene5.bmp; sourceTree = "<group>"; };
+		158E0D5F21ABAA3D00849F8F /* scene7.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = scene7.bmp; sourceTree = "<group>"; };
+		158E0D6021ABAA3D00849F8F /* scene6.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = scene6.bmp; sourceTree = "<group>"; };
+		15F6E9F121A7AE5100E9137F /* bruno-first-render.ppm */ = {isa = PBXFileReference; lastKnownFileType = text; path = "bruno-first-render.ppm"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1978,8 +2003,11 @@
 		152D5A5E21923ECB0082CC96 /* Comp371 Final Project MacOS */ = {
 			isa = PBXGroup;
 			children = (
+				158E0D4A21ABAA3D00849F8F /* Scene_Files */,
 				15F6E9F121A7AE5100E9137F /* bruno-first-render.ppm */,
 				152D5A6D219242B30082CC96 /* glm */,
+				158E0D4321AB43E600849F8F /* objLoader.cpp */,
+				158E0D4421AB43E600849F8F /* objLoader.hpp */,
 				152D5A68219240BE0082CC96 /* SceneLoader.cpp */,
 				152D5A69219240BE0082CC96 /* SceneLoader.h */,
 				152D5A5F21923ECB0082CC96 /* main.cpp */,
@@ -4407,6 +4435,35 @@
 			path = ../../../../../../../../../opt/X11/include/GLES;
 			sourceTree = "<group>";
 		};
+		158E0D4A21ABAA3D00849F8F /* Scene_Files */ = {
+			isa = PBXGroup;
+			children = (
+				158E0D4B21ABAA3D00849F8F /* sceneMap.txt */,
+				158E0D4C21ABAA3D00849F8F /* scene4.txt */,
+				158E0D4D21ABAA3D00849F8F /* scene5.txt */,
+				158E0D4E21ABAA3D00849F8F /* scene7.txt */,
+				158E0D4F21ABAA3D00849F8F /* scene6.txt */,
+				158E0D5021ABAA3D00849F8F /* map.obj */,
+				158E0D5121ABAA3D00849F8F /* scene2.txt */,
+				158E0D5221ABAA3D00849F8F /* scene3.txt */,
+				158E0D5321ABAA3D00849F8F /* scene1.txt */,
+				158E0D5421ABAA3D00849F8F /* sceneCube.bmp */,
+				158E0D5521ABAA3D00849F8F /* scenefish.txt */,
+				158E0D5621ABAA3D00849F8F /* cube.obj */,
+				158E0D5721ABAA3D00849F8F /* sceneCube.txt */,
+				158E0D5821ABAA3D00849F8F /* fish.obj */,
+				158E0D5921ABAA3D00849F8F /* scenefish.bmp */,
+				158E0D5A21ABAA3D00849F8F /* scene2.bmp */,
+				158E0D5B21ABAA3D00849F8F /* scene3.bmp */,
+				158E0D5C21ABAA3D00849F8F /* sceneMap.bmp */,
+				158E0D5D21ABAA3D00849F8F /* scene4.bmp */,
+				158E0D5E21ABAA3D00849F8F /* scene5.bmp */,
+				158E0D5F21ABAA3D00849F8F /* scene7.bmp */,
+				158E0D6021ABAA3D00849F8F /* scene6.bmp */,
+			);
+			path = Scene_Files;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -4463,9 +4520,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				152D5A6B219240BE0082CC96 /* SceneLoader.cpp in Sources */,
+				158E0D4921AB551100849F8F /* objLoader.cpp in Sources */,
+				158E0D4821AB54C300849F8F /* SceneLoader.cpp in Sources */,
 				152D5A6021923ECB0082CC96 /* main.cpp in Sources */,
-				155E0530219FD6CD0029CA33 /* RayTracer.cpp in Sources */,
+				158E0D4621AB53B600849F8F /* RayTracer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

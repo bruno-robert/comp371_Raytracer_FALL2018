@@ -25,7 +25,7 @@ RayTracer::~RayTracer() {
  If the ray doesn't intersect, returns the background color
 */
 glm::vec3 RayTracer::trace(glm::vec3 &origin, glm::vec3 &pixelPos, int depth) {
-    glm::vec3 color = glm::vec3(0.2f);//backgroud color
+    glm::vec3 color = glm::vec3(0.0f);//backgroud color
     SceneObject * closestObject = nullptr;//the closest object
     float iClosest = INFINITY; //the closes distance to an object
     
@@ -92,7 +92,7 @@ glm::vec3 RayTracer::trace(glm::vec3 &origin, glm::vec3 &pixelPos, int depth) {
         
         glm::vec3 ambient = (closestObject->ambientColor * currentLight->ambient);
         
-        glm::vec3 diffuse = isLit * (closestObject->diffuseColor * currentLight->diffuse * (float)fmax(glm::dot(intersectionNormal, lightDirection), 0));
+        glm::vec3 diffuse = isLit * (closestObject->diffuseColor * currentLight->diffuse * (float)fmax((float)glm::dot(intersectionNormal, lightDirection), 0));
         
         glm::vec3 specular = isLit * (closestObject->specularColor * currentLight->specular * pow((float)fmax((float)glm::dot(viewDirection, reflectedLight), 0.0f), closestObject->shininess));
 
@@ -123,6 +123,9 @@ void RayTracer::raytrace() {
     glm::vec3 *image = new glm::vec3[width * height], *pixel = image;//stores all the pixel values
     
     for(int y = 0; y < height; y++) {
+        //std::cout << "this is a test" << std::endl;
+        
+        std::cout << "\rworking ... " << ((float)y/height)*100 << "%" << std::flush;
         for(int x = 0; x < width; x++, ++pixel) {
             
             /*
@@ -140,9 +143,8 @@ void RayTracer::raytrace() {
             glm::vec3 pixelPos(posx, posy, posz);//position of the pixel
             
             *pixel = trace(cam.position, pixelPos, 0);//calculate the pixel color
+            
         }
-        
-        
     }
     std::cout << "writing to file..." << std::endl;
     // Save result to a PPM image (keep these flags if you compile under Windows)

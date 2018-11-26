@@ -2,7 +2,7 @@
 
 //----helper functions----//
 
-static bool sameSide(const glm::vec3 &p1 ,const glm::vec3 &p2, const glm::vec3 &a, const glm::vec3 &b) {
+bool sameSide(const glm::vec3 &p1 ,const glm::vec3 &p2, const glm::vec3 &a, const glm::vec3 &b) {
     glm::vec3 cp1 = glm::cross(b-a, p1-a);
     glm::vec3 cp2 = glm::cross(b-a, p2-a);
     if (glm::dot(cp1, cp2) >= 0 ) return true;
@@ -66,12 +66,14 @@ static bool getLineValue(std::string str ,float *val, const std::string &prefix)
     return 0;
 }
 
-static bool getLineValue(std::string str, char * path, const std::string &prefix) {
+//str: line to analyse
+//path: the variable to change
+static bool getLineValue(const std::string &str, std::string &path, const std::string &prefix) {
     std::istringstream iss(str);
     std::string word;
     if(prefix == "") {//if there is no prefix
         while(iss >> word) {
-            strcpy(path, word.c_str());
+            path = word.c_str();
             return 1;
         }
     }
@@ -80,7 +82,7 @@ static bool getLineValue(std::string str, char * path, const std::string &prefix
     while(iss >> word) {
         if(word == prefix || word == (prefix + ":")) {
             iss >> word;
-            strcpy(path, word.c_str());
+            path = word.c_str();
             return 1;
         } else {
             std::cout << "prefix not recognised: " << word << std::endl;
@@ -186,67 +188,43 @@ glm::vec3 Sphere::getNormal(const glm::vec3 &intersection) {
     return normal;//we need a normal from the center to the outside
 }
 
-Mesh::Mesh(char * path, const glm::vec3 &ambientColor,
+Mesh::Mesh(std::string homePath, std::string path, const glm::vec3 &ambientColor,
            const glm::vec3 &diffuseColor, const glm::vec3 &specularColor,
-           float shininess) : SceneObject(ambientColor, diffuseColor, specularColor, shininess)
+           float shininess)
 {
+    this->ambientColor = ambientColor;
+    this->diffuseColor = diffuseColor;
+    this->specularColor = specularColor;
+    this->shininess = shininess;
+    this->homePath = homePath;
     this->path = path;
     isMeshLoaded = false;
 }
 
-bool Mesh::intersect(const glm::vec3 &origin, const glm::vec3 &direction, float &i1, float &i2) {
-    //TODO:
-    if(!isMeshLoaded) {
-        //load the associated file (do this once per mesh)
-        isMeshLoaded = gatherMesh();
+bool Mesh::gatherMesh(Scene *s) {
+    if (isMeshLoaded) {//don't run if it is already loaded
+        return isMeshLoaded;
     }
-    if(isMeshLoaded){
-        
-        //find the object that is the first to be intersected if any
-        //find the object that is last to be intersected if any
-        //set i1 and i2 if applicable
-        //return the apropritate value
-    }
+    std::vector<glm::vec3> verticies;
+    std::vector<glm::vec3> normals;//these are not used in this case
+    std::vector<glm::vec2> uvs;//these are also not used in this case
+    std::string fullPath = homePath + path;
     
+    const char * p = fullPath.c_str();//translating string to const char pointer
     
+    isMeshLoaded = loadOBJ(p, verticies, normals, uvs);
     
-    
-    
-    if(VERBOSE) {
-        std::cout << "mesh failed to load" << std::endl;
-    }
-    return false;
-}
-
-glm::vec3 Mesh::getNormal(const glm::vec3 &intersection) {
-    glm::vec3 a = glm::vec3(0.0f);
-    return a;//TODO:
-}
-
-bool Mesh::gatherMesh() {
-    std::string sceneFolderPath = "/Users/Bruno/OneDrive - Concordia University - Canada/Documents/Concordia/Fall 2018/Comp 371/Xcode/Comp371 Final Project MacOS/Comp371 Final Project MacOS/Scene_Files/";
-    std::ifstream ifs;//input file stream
-    ifs.open(sceneFolderPath + path, std::fstream::in);
-    if (!ifs.is_open()) {
-        std::cout << "Error - cannot open the file." << std::endl;
-        return 0;
+    //fLoad all the triangles of the Mesh into the Scene
+    for(int i = 0; i < verticies.size() - 2; i+=3) {//the size-2 par is to make sure we have at least 3 verticies left
+        int i1 = i;
+        int i2 = i + 1;
+        int i3 = i + 2;
+        //Load the current triangle
+        Triangle *t = new Triangle(verticies.at(i1), verticies.at(i2), verticies.at(i3), this->ambientColor, this->diffuseColor, this->specularColor, this->shininess);
+        s->addTriangle(t);//push triangle to scene
     }
     
-    const int LINE_SIZE = 256;//maximum size of a line
-    char line[LINE_SIZE];//stores teh current line
-    
-    //Read first line and create the Proper number of Objects
-    if (ifs.good()) {
-        ifs.getline(line, LINE_SIZE);
-        try {
-            //numberOfObjects = std::stoi(line);
-        }
-        catch (std::exception const &e) {
-            std::cout << "the number of objects wasn't translated to an integer" << std::endl;
-        }
-    }
-    
-    return true;
+    return isMeshLoaded;
 }
 
 Triangle::Triangle(const glm::vec3 &v1, const glm::vec3 &v2, const glm::vec3 &v3, const glm::vec3 &ambientColor, const glm::vec3 &diffuseColor, const glm::vec3 &specularColor, float shininess) : SceneObject(ambientColor, diffuseColor, specularColor, shininess) {
@@ -256,6 +234,7 @@ Triangle::Triangle(const glm::vec3 &v1, const glm::vec3 &v2, const glm::vec3 &v3
 }
 
 bool Triangle::intersect(const glm::vec3 &origin, const glm::vec3 &direction, float &i1, float &i2) {
+    float bias = 0.0001f;//bias is here so that that plane doesn't intersect with itself
     glm::vec3 tNormal = glm::cross((v1 - v2), (v2 - v3));//vector that is normal to the triangle's plane
     tNormal = glm::normalize(tNormal);
     
@@ -264,7 +243,7 @@ bool Triangle::intersect(const glm::vec3 &origin, const glm::vec3 &direction, fl
     if (std::abs(denom) > 0.0001f)
     {
         float t = glm::dot((v1 - origin), tNormal) / denom;
-        if (t >= 0) {
+        if (t >= 0 + bias) {
             i1 = i2 = t;//there is only one intersection so just set to be equal
             
             glm::vec3 intersect = t * direction + origin;
@@ -295,12 +274,8 @@ Light::Light(const glm::vec3 &pos, const glm::vec3 &ambient, const glm::vec3 &di
     this->specular = specular;
 }
 
-Scene::Scene() {
-    this->path = "/Users/Bruno/Desktop/test1234.txt";//WIN: change to win path
-	numberOfObjects = 0;
-}
-
-Scene::Scene(const char * path) {
+Scene::Scene(std::string homePath, std::string path) {
+    this->homePath = homePath;
 	this->path = path;
 	numberOfObjects = 0;
 }
@@ -314,7 +289,7 @@ Scene::~Scene() {
  */
 bool Scene::loadScene() {
 	std::ifstream ifs;
-	ifs.open(path, std::fstream::in);
+	ifs.open(homePath + path, std::fstream::in);
 	if (!ifs.is_open()) {
 		std::cout << "Error - cannot open the file." << std::endl;
 		return 0;
@@ -574,7 +549,7 @@ bool Scene::loadScene() {
                 lightArray.push_back(light);
             }
         } else if(currentLine == "mesh" || currentLine == "mesh\n" || currentLine == "mesh\r\n" || currentLine == "mesh\r") {
-            char * path = nullptr;
+            std::string path = "";
             glm::vec3 ambientColor;
             glm::vec3 diffuseColor;
             glm::vec3 specularColor;
@@ -583,7 +558,7 @@ bool Scene::loadScene() {
             if(ifs.good()) {//get position
                 ifs.getline(line, LINE_SIZE);
                 currentLine = line;
-                if(!getLineValue(line, path, ""))//get the value
+                if(!getLineValue(line, path, "file:"))//get the value
                 err = true;//if something went wrong set err to true
             } else {
                 err = true;
@@ -624,9 +599,10 @@ bool Scene::loadScene() {
                 std::cout << "missing data in mesh (or something went wrong)" << std::endl;
             } else {
                 //create triangle and push back
-                Mesh *mesh = new Mesh(path, ambientColor, diffuseColor, specularColor, shininess);
+                Mesh *mesh = new Mesh(homePath, path, ambientColor, diffuseColor, specularColor, shininess);
                 meshArray.push_back(*mesh);
-                sObjArray.push_back(mesh);
+                mesh->gatherMesh(this);//add the Mesh details to this scene
+                //sObjArray.push_back(mesh);
             }
 
         } else if(currentLine == "plane" || currentLine == "plane\n" || currentLine == "plane\r\n" || currentLine == "plane\r") {
@@ -727,5 +703,9 @@ void Scene::getObjectInfo() {
     
 }
 
+void Scene::addTriangle(Triangle *t) {
+    triangleArray.push_back(*t);
+    sObjArray.push_back(t);
+}
 
 

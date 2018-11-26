@@ -13,6 +13,8 @@
 #include <math.h>
 #include "SceneLoader.h"
 #include "glm.hpp"//glm
+#include <iomanip>//to clear lines in the terminal
+#include <ostream>
 
 #if defined __linux__ || defined __APPLE__
 // "Compiled for Linux
