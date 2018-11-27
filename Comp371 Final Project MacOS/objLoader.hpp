@@ -2,8 +2,9 @@
 //  objLoader.hpp
 //  Comp371 Final Project MacOS
 //
-//  Created by Bruno Robert on 25/11/2018.
-//  Copyright © 2018 Bruno Robert. All rights reserved.
+//  ObjectLoader was modified to work on OSX 10.14.x
+//  fsanf_s have been replaced by fscan (the main difference is that fscan doesn't check for as many errors)
+//  hopefully the obj files are well written
 //
 
 #pragma once

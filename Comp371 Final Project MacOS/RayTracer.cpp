@@ -8,6 +8,7 @@
 
 #include "RayTracer.hpp"
 
+//constructor
 RayTracer::RayTracer(Scene * scene, int width, std::string outputPath) {
     this->scene = scene;
     this->width = width;
@@ -15,6 +16,7 @@ RayTracer::RayTracer(Scene * scene, int width, std::string outputPath) {
     this-> outputPath = outputPath;
 }
 
+//deconsctructor
 RayTracer::~RayTracer() {
     //TODO: make sure scene is deleted properly
 }
@@ -32,15 +34,15 @@ glm::vec3 RayTracer::trace(glm::vec3 &origin, glm::vec3 &pixelPos, int depth) {
     glm::vec3 direction = pixelPos - origin;//direction of the ray
     direction = glm::normalize(direction);
     
-    float i1 = INFINITY, i2 = INFINITY;
+    float i1 = INFINITY, i2 = INFINITY;//intersection points (i1 is the closest one i2 is the optional further intersection)
     
-    //TODO: loop through all the objects and find the closest one
+    //for each object in teh scene we test for intersection
     for(int i = 0; i < scene->sObjArray.size(); i++) {
-        if (scene->sObjArray[i]->intersect(origin, direction, i1, i2)) {
+        if (scene->sObjArray[i]->intersect(origin, direction, i1, i2)) {//if there is an intersection
             if (i1 < 0) i1 = i2; //if the first intersection is behind us (we are in the sphere)
             if (i1 < iClosest) {//if this intersection is closer than the previous one
-                iClosest = i1;
-                closestObject = scene->sObjArray[i];
+                iClosest = i1;//set the distance to intersection
+                closestObject = scene->sObjArray[i];//set the closest object
             }
         }
     }
@@ -49,11 +51,12 @@ glm::vec3 RayTracer::trace(glm::vec3 &origin, glm::vec3 &pixelPos, int depth) {
     // if there are no intersections return the background color
     if (!closestObject) return color;
     
+    
     glm::vec3 intersection = origin + (direction * iClosest);//position of the intersection
-    glm::vec3 intersectionNormal = closestObject->getNormal(intersection);
-    for(int j = 0; j < scene->lightArray.size(); j++) {
-        Light * currentLight = &scene->lightArray[j];
-        float isLit = 1;
+    glm::vec3 intersectionNormal = closestObject->getNormal(intersection);//normal at intersection
+    for(int j = 0; j < scene->lightArray.size(); j++) {//we loop through all the lights
+        Light * currentLight = &(scene->lightArray[j]);
+        float isLit = 1;//the light hits the object by default
         glm::vec3 lightDirection = currentLight->position - intersection;//from intersection to light
         lightDirection = glm::normalize(lightDirection);
         
@@ -63,9 +66,9 @@ glm::vec3 RayTracer::trace(glm::vec3 &origin, glm::vec3 &pixelPos, int depth) {
          through the valley of darkness, for he is truly his brother's keeper and the finder of lost
          children."
          */
-        for(int i = 0; i < scene->sObjArray.size(); i++) {
+        for(int i = 0; i < scene->sObjArray.size(); i++) {//check for intersection with shadow ray
             if (scene->sObjArray[i]->intersect(intersection, lightDirection, i1, i2)) {
-                isLit = 0;
+                isLit = 0;//the light doesn't hit the object since the shadow ray intersects an object
                 break;
             }
         }
@@ -90,14 +93,19 @@ glm::vec3 RayTracer::trace(glm::vec3 &origin, glm::vec3 &pixelPos, int depth) {
             reflectedLight = -reflectedLight;
         }
         
+        //ambient component
         glm::vec3 ambient = (closestObject->ambientColor * currentLight->ambient);
         
-        glm::vec3 diffuse = isLit * (closestObject->diffuseColor * currentLight->diffuse * (float)fmax((float)glm::dot(intersectionNormal, lightDirection), 0));
+        //diffuse component
+        glm::vec3 diffuse = isLit * ((closestObject->diffuseColor * currentLight->diffuse) * (float)fmax((float)glm::dot(intersectionNormal, lightDirection), 0.0f));
         
-        glm::vec3 specular = isLit * (closestObject->specularColor * currentLight->specular * pow((float)fmax((float)glm::dot(viewDirection, reflectedLight), 0.0f), closestObject->shininess));
-
-        color += ambient + diffuse + specular;
+        //specular component
+        glm::vec3 specular = isLit * ((closestObject->specularColor * currentLight->specular) * pow((float)fmax((float)glm::dot(viewDirection, reflectedLight), 0.0f), closestObject->shininess));
+        
+        //add the 3 components to the pixel color
+        color = color + ambient + diffuse + specular;
     }
+    //pixel color
     return color;//And God said, "Let there be light," and there was light.
 }
 
@@ -122,6 +130,8 @@ void RayTracer::raytrace() {
     
     glm::vec3 *image = new glm::vec3[width * height], *pixel = image;//stores all the pixel values
     
+    
+    //we itterate through all pixels to trace the right amount of rays
     for(int y = 0; y < height; y++) {
         //std::cout << "this is a test" << std::endl;
         
@@ -146,14 +156,16 @@ void RayTracer::raytrace() {
             
         }
     }
+    
+    //now we simply output the pixels to the image file
     std::cout << "writing to file..." << std::endl;
-    // Save result to a PPM image (keep these flags if you compile under Windows)
+    // Save result to a PPM/BMP image (keep these flags if you compile under Windows)
     std::ofstream ofs(outputPath, std::ios::out | std::ios::binary);
     ofs << "P6\n" << width << " " << height << "\n255\n";
     for (unsigned i = 0; i < width * height; ++i) {
-        ofs << (unsigned char)(std::min(float(1), image[i].x) * 255) <<
-        (unsigned char)(std::min(float(1), image[i].y) * 255) <<
-        (unsigned char)(std::min(float(1), image[i].z) * 255);
+        ofs << (unsigned char)(std::min(float(1), fabs(image[i].x)) * 255) <<
+        (unsigned char)(std::min(float(1), fabs(image[i].y)) * 255) <<
+        (unsigned char)(std::min(float(1), fabs(image[i].z)) * 255);
     }
     ofs.close();
     delete [] image;

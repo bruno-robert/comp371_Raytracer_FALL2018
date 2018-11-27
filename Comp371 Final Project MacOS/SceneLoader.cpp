@@ -2,13 +2,14 @@
 
 //----helper functions----//
 
+//returns true if p1 and p2 are on the same side of vec(b-a)
+//this is used to check if a point lies within or without of a triangle for example
 bool sameSide(const glm::vec3 &p1 ,const glm::vec3 &p2, const glm::vec3 &a, const glm::vec3 &b) {
     glm::vec3 cp1 = glm::cross(b-a, p1-a);
     glm::vec3 cp2 = glm::cross(b-a, p2-a);
     if (glm::dot(cp1, cp2) >= 0 ) return true;
     else return false;
 }
-
 
 //getLineValue checks the line prefix for validity and then sets the given variable with the line's value
 //multiple overloads for different variables types
@@ -182,6 +183,7 @@ bool Sphere::intersect(const glm::vec3 &origin, const glm::vec3 &direction, floa
     
 }
 
+//returns the normal at the intersection
 glm::vec3 Sphere::getNormal(const glm::vec3 &intersection) {
     glm::vec3 normal = intersection - position;
     normal = glm::normalize(normal);
@@ -263,8 +265,8 @@ bool Triangle::intersect(const glm::vec3 &origin, const glm::vec3 &direction, fl
 
 glm::vec3 Triangle::getNormal(const glm::vec3 &intersection) {
     glm::vec3 tNormal = glm::cross((v1 - v2), (v2 - v3));//vector that is normal to the triangle's plane
-    tNormal = glm::normalize(tNormal);
-    return tNormal;
+    tNormal = glm::normalize(tNormal);//we normalise
+    return tNormal;//this is one of the 2 possible normal direction care!
 }
 
 Light::Light(const glm::vec3 &pos, const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular) {
@@ -281,7 +283,10 @@ Scene::Scene(std::string homePath, std::string path) {
 }
 
 Scene::~Scene() {
-    //TODO: delete objectArray properly
+    //delete the array of pointers properly
+    for ( auto p : sObjArray )
+        delete p;
+    
 }
 
 /*
@@ -314,6 +319,9 @@ bool Scene::loadScene() {
     }
     
     //loop through file and instanciate each object
+    //This part is quite simple, it's basically a repeating sequence
+    // we read each line one by one, checking if every prefix is correct and in order
+    //it stores the data in the appropriate vectors
 	while (ifs.good()) {//check if ther is a line
 		ifs.getline(line, LINE_SIZE);//retrieve current line
         std::string currentLine = line;
@@ -553,7 +561,7 @@ bool Scene::loadScene() {
             glm::vec3 ambientColor;
             glm::vec3 diffuseColor;
             glm::vec3 specularColor;
-            float shininess = 0;//TODO: finish Mesh
+            float shininess = 0;
             bool err = false;
             if(ifs.good()) {//get position
                 ifs.getline(line, LINE_SIZE);
@@ -600,9 +608,9 @@ bool Scene::loadScene() {
             } else {
                 //create triangle and push back
                 Mesh *mesh = new Mesh(homePath, path, ambientColor, diffuseColor, specularColor, shininess);
-                meshArray.push_back(*mesh);
-                mesh->gatherMesh(this);//add the Mesh details to this scene
-                //sObjArray.push_back(mesh);
+                meshArray.push_back(*mesh);//add it to the mesh array
+                mesh->gatherMesh(this);//add the Mesh details to this scene (create triangles)
+                
             }
 
         } else if(currentLine == "plane" || currentLine == "plane\n" || currentLine == "plane\r\n" || currentLine == "plane\r") {
@@ -685,6 +693,9 @@ int Scene::getNumberOfObjects() {
     return this->numberOfObjects;
 }
 
+
+//print out some info on the object that were loading in the scene file
+//The triangle section includes triangles that are contained in Mesh objects
 void Scene::getObjectInfo() {
     std::string str;
     
@@ -703,6 +714,7 @@ void Scene::getObjectInfo() {
     
 }
 
+//adds a triangle to the triangle array
 void Scene::addTriangle(Triangle *t) {
     triangleArray.push_back(*t);
     sObjArray.push_back(t);

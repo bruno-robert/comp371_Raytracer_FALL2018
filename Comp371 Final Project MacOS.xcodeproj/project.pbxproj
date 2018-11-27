@@ -1969,6 +1969,7 @@
 		158E0D5F21ABAA3D00849F8F /* scene7.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = scene7.bmp; sourceTree = "<group>"; };
 		158E0D6021ABAA3D00849F8F /* scene6.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = scene6.bmp; sourceTree = "<group>"; };
 		15F6E9F121A7AE5100E9137F /* bruno-first-render.ppm */ = {isa = PBXFileReference; lastKnownFileType = text; path = "bruno-first-render.ppm"; sourceTree = "<group>"; };
+		15FB863721AC70B000415C1F /* bruno-first-render.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; name = "bruno-first-render.bmp"; path = "Comp371 Final Project MacOS/bruno-first-render.bmp"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2004,6 +2005,7 @@
 			isa = PBXGroup;
 			children = (
 				158E0D4A21ABAA3D00849F8F /* Scene_Files */,
+				15FB863721AC70B000415C1F /* bruno-first-render.bmp */,
 				15F6E9F121A7AE5100E9137F /* bruno-first-render.ppm */,
 				152D5A6D219242B30082CC96 /* glm */,
 				158E0D4321AB43E600849F8F /* objLoader.cpp */,

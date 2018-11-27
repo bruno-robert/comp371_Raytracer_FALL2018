@@ -14,26 +14,20 @@
 #include <fstream>
 
 int main(int argc, const char * argv[]) {
-    
-//    std::fstream outfile;
-//    outfile.open("/Users/Bruno/Desktop/test1234.txt", std::fstream::out);//WIN: this path needs to be changed to local windows path
-//    outfile << "this is a test" << std::endl;
-//    outfile.close();
+    //the local folder of the scene files
     std::string sceneFolderPath = "/Users/Bruno/OneDrive - Concordia University - Canada/Documents/Concordia/Fall 2018/Comp 371/Xcode/Comp371 Final Project MacOS/Comp371 Final Project MacOS/Scene_Files/";
-    std::string sceneFile = "sceneMap.txt";
+    std::string sceneFile = "sceneMap.txt";//the scene file we want to use
     
+    Scene scene(sceneFolderPath, sceneFile);//create scene object
+    scene.loadScene();//load the scene from the fime
     
-    Scene scene(sceneFolderPath, sceneFile);
-    scene.loadScene();
+    scene.getObjectInfo();//optional, verbose the scene info to the console
     
-    scene.getObjectInfo();
+    std::string outputFile = "/Users/Bruno/OneDrive - Concordia University - Canada/Documents/Concordia/Fall 2018/Comp 371/Xcode/Comp371 Final Project MacOS/Comp371 Final Project MacOS/bruno-first-render.bmp";//the path to the output file
     
-    std::string outputFile = "/Users/Bruno/OneDrive - Concordia University - Canada/Documents/Concordia/Fall 2018/Comp 371/Xcode/Comp371 Final Project MacOS/Comp371 Final Project MacOS/bruno-first-render.ppm";
+    RayTracer rt(&scene, 1920, outputFile);//create the Raytracer and pass the scene object to it
     
-    RayTracer rt(&scene, 1920, outputFile);
-    
-    rt.raytrace();
-
+    rt.raytrace();// start tracing the rays and create the image file
     
     return 0;
 }

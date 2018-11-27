@@ -17,6 +17,7 @@ const bool VERBOSE = true;//MARK: debug verbose on/off
 class Scene;
 
 //----Helper objects----//
+//scene object, all objects in teh scene are descendents of this object
 class SceneObject {
 public:
     SceneObject();
@@ -87,6 +88,7 @@ private:
 };
 
 //Mesh object
+//The mesh object hods the path to the obj file. It doesn't store the mesh data, it only loads the mesh triangles into the triangle objects
 class Mesh {
 public:
     Mesh(std::string homePath, std::string path, const glm::vec3 &ambientColor, const glm::vec3 &diffuseColor, const glm::vec3 &specularColor, float shininess);
@@ -117,17 +119,20 @@ public:
 //----SceneObj----//
 //Scene objects load data from scene files and 
 //store the data in various objects that are declared bellow
+//The important vector is the sObjArray, it stores all the objects that can render (Mesh are saved as triangles)
 class Scene 
 {
 public:
 	Scene(std::string homePath, std::string path);
     ~Scene();
-	bool loadScene();
-	void setNumberOfObjects(int number);
-	int getNumberOfObjects();
-    void getObjectInfo();
-    void addTriangle(Triangle *t);
-    //std::vector<SceneObject*> objectArray;//MARK: removable old
+	bool loadScene();//loads the scene from the scene file, this populates the various vectors of the scene
+	void setNumberOfObjects(int number);//set's the number of objects
+	int getNumberOfObjects();//get the number of objects
+    void getObjectInfo();//prints the number of cameras, lights etc.
+    void addTriangle(Triangle *t);//adds a triangle to the scene
+    
+    //These arrays are technically not usefull here and could be removed
+    //but they serve as a fallback if sObjArray fails somehow (the fallback isn't implemented yet though :S
     std::vector<Camera> cameraArray;
     std::vector<Plane> planeArray;
     std::vector<Sphere> sphereArray;
@@ -139,7 +144,7 @@ public:
     //thus simplifiying the process of iterating through all of them
     std::vector<SceneObject*> sObjArray;
 private:
-	std::string path;
-    std::string homePath;
-	int numberOfObjects;
+	std::string path;//loacal path of the scene
+    std::string homePath;//absolute path to the folder containing the scene
+	int numberOfObjects;//number of objects
 };
