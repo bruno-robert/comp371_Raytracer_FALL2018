@@ -3,3 +3,14 @@ Project created in xCode on MacOS 10.14
 paths to files are absolute and might need to be changed if you are running this on a different computer.
 
 Line endings may vary from file to file (especially the scene files)
+
+For best experience I would recomend running this code OSX
+
+
+Intruction to run
+
+1. make sure you change the file Paths to your own in main.cpp
+2. (optional is you use OSX) add the apropriate #includes for your operating system
+3. Run and Enjoy!
+
+Bruno Robert 40003443
