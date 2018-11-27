@@ -16,14 +16,14 @@
 int main(int argc, const char * argv[]) {
     //the local folder of the scene files
     std::string sceneFolderPath = "/Users/Bruno/OneDrive - Concordia University - Canada/Documents/Concordia/Fall 2018/Comp 371/Xcode/Comp371 Final Project MacOS/Comp371 Final Project MacOS/Scene_Files/";
-    std::string sceneFile = "sceneMap.txt";//the scene file we want to use
+    std::string sceneFile = "input_scene.txt";//the scene file we want to use
     
     Scene scene(sceneFolderPath, sceneFile);//create scene object
     scene.loadScene();//load the scene from the fime
     
     scene.getObjectInfo();//optional, verbose the scene info to the console
     
-    std::string outputFile = "/Users/Bruno/OneDrive - Concordia University - Canada/Documents/Concordia/Fall 2018/Comp 371/Xcode/Comp371 Final Project MacOS/Comp371 Final Project MacOS/bruno-first-render.bmp";//the path to the output file
+    std::string outputFile = "/Users/Bruno/OneDrive - Concordia University - Canada/Documents/Concordia/Fall 2018/Comp 371/Xcode/Comp371 Final Project MacOS/Comp371 Final Project MacOS/output.bmp";//the path to the output file
     
     RayTracer rt(&scene, 1920, outputFile);//create the Raytracer and pass the scene object to it
     
