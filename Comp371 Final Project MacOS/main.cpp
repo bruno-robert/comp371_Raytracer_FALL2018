@@ -5,8 +5,9 @@
 //  Created by Bruno Robert on 06/11/2018.
 //  Copyright © 2018 Bruno Robert. All rights reserved.
 //
-// With help from kylehalladay.com/blog/tutorial/math/2013/12/24/Ray-Sphere-Intersection.html
-// With potential snipets from www.scratchapixel.com/code.php?id=3&origin=/lessons/3d-basic-rendering/introduction-to-ray-tracing
+// With help from http://kylehalladay.com/blog/tutorial/math/2013/12/24/Ray-Sphere-Intersection.html
+// With potential snipets from https://www.scratchapixel.com/code.php?id=3&origin=/lessons/3d-basic-rendering/introduction-to-ray-tracing
+// Used this method for the triangle intersection http://blackpawn.com/texts/pointinpoly/
 
 #include <iostream>
 #include "SceneLoader.h"
